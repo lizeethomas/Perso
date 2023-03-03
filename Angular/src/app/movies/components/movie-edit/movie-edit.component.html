@@ -1,0 +1,50 @@
+<mat-card class="main-form" [formGroup]="mainForm">
+    <div class="main-movie">
+        <div class="movie-img">
+            <img [src]="movie.url">
+        </div>
+        <div class="movie-content">
+            <!-- {{movie.editmode}} -->
+            <div>
+                <mat-form-field appeareance="fill">
+                    <mat-label>Title</mat-label>
+                    <input type="text" matInput formControlName="title" [(ngModel)]="movie.title" [readonly]="movie.editmode">
+                    <mat-error>Ce champ est requis</mat-error>
+                </mat-form-field>
+                <mat-form-field appeareance="fill">
+                    <mat-label>Date</mat-label>
+                    <input type="number" matInput formControlName="date" [(ngModel)]="movie.date" [readonly]="movie.editmode">
+                    <mat-error>Ce champ est requis</mat-error>
+                </mat-form-field>
+                <mat-form-field appeareance="fill">
+                    <mat-label>Director</mat-label>
+                    <input type="text" matInput formControlName="director" >
+                    <mat-error>Ce champ est requis</mat-error>
+                </mat-form-field>
+                <mat-form-field appeareance="fill">
+                    <mat-label>Rating</mat-label>
+                    <mat-select type="number" matInput formControlName="rating">
+                        <mat-option *ngFor="let nb of rate" [value]="nb">
+                            {{nb}}/10
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="form-group form-check checkboxes" *ngFor="let genre of values.slice(0,values.length/2); let index = index">
+                <input class="form-check-input" [value]="index" type="checkbox" (change)="onCheckboxChange($event)" [checked]="checks[index]">
+                <label class="form-check-label" for="type">{{genre}}</label>
+            </div>
+            <div>
+                <mat-form-field appeareance="fill" class="commentary">
+                    <mat-label>Commentary</mat-label>
+                    <textarea rows="5" type="text" matInput formControlName="commentary"></textarea>
+                </mat-form-field>
+            </div>
+            <div [ngSwitch]="movie.editmode">
+                <button *ngSwitchCase="false" class="movie-button" (click)="onSubmitForm()">Ajouter le film à la database</button>
+                <button *ngSwitchCase="true" class="movie-button" (click)="onSaveChanges()">Sauvegarder les modifications</button>
+                <button *ngSwitchCase="true" class="movie-button" (click)="cancelEditMode()">Annuler les changements</button>
+            </div>
+        </div>
+    </div>
+</mat-card>

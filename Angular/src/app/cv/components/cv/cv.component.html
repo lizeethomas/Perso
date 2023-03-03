@@ -1,0 +1,5 @@
+<p>WORK IN PROGRESS</p>
+<hr>
+<div class="items" *ngFor="let item of this.cvItems$ | async">
+    <app-item [item]="item"></app-item>
+</div>

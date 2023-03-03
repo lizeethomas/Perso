@@ -1,0 +1,92 @@
+.fade {
+    color: #776666
+}
+
+h1 {
+    color: white;
+    font-style: oblique;
+}
+
+.movies {
+    margin: 20px;
+    padding: 10px;
+    box-sizing: border-box;
+    box-shadow: inset;
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    
+}
+
+.grid {
+    display: flex;
+    
+}
+
+.form-button {
+    height: 50px;
+    width: 100px
+}
+
+.form {
+    height: 40px;
+}
+
+.single-movie {
+    margin-bottom: 20px;
+    background-color: rgb(177, 227, 255);
+    box-shadow: inset;
+    width: 95%;
+}
+
+mat-card-title {
+    font-weight: bold;
+    font-style: oblique;
+    font-size: 140%;
+}
+
+.edit-button {
+    float: right;
+    border: 2px solid rgb(52, 88, 167);
+    background-color: rgb(15, 63, 134);
+    color: white;
+    width: 20%;
+    margin: 1%;
+}
+
+.delete-button {
+    float: right;
+    border: 2px solid rgb(153, 33, 33);
+    background-color: rgb(141, 0, 0);
+    color: white;
+    width: 20%;
+    margin: 1%;
+}
+
+.test {
+    display: flex;
+}
+
+.main-movie {
+    border-color: rgb(169, 187, 238);
+    height: auto;
+}
+
+.movie-img {
+    float:left;
+    width: 30%;
+}
+
+.movie-commentary {
+    font-size:smaller;
+}
+
+.movie-content {
+    float:right;
+    width: 70%;
+    max-height: 100%;
+}
+
+img {
+    max-width: 100%;
+    max-height: 400px;
+    display: block;
+}

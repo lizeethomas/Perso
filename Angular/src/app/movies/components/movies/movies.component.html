@@ -1,0 +1,69 @@
+<div *ngIf="admin" class="tmdb">
+
+    <div class="part1">
+
+        <div class="form">
+                <input class="form-field" matInput type="text" [formControl]="searchForm" placeholder="Let's find a movie !">
+                <button class="form-button" (click)="getData(searchForm.value)">Search</button>
+        </div>
+
+        <div class="list-found">
+            <div *ngIf="data$">
+                <div *ngFor="let item of this.data$ | async">
+                    <li style="list-style-type: none">
+                        <button (click)="moviePicker(item)" class="picker">{{item.original_title}} ({{item.release_date | year}})</button> 
+                    </li>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <div class="part2">
+
+        <div class="result">  
+            <div *ngIf="check === Check.found" class="found">
+                <app-movie-edit [movie]="this.movie"></app-movie-edit>
+            </div> 
+        </div>
+
+    </div>
+</div>
+
+
+
+<mat-spinner *ngIf="loading$ | async"></mat-spinner>
+
+<div class="all-movies">
+    <div class="movies">
+        <h1>Vus en Février 2023</h1>
+        <div class="sorting">
+
+            <button class="sort-button" (click)="sortByTitle()" 
+            [ngClass]="{ascending: sortingClass[0] === 1, disabled: sortingClass[0] === 0, descending: sortingClass[0] === -1}">
+            Titre de l'oeuvre </button>
+            <button class="sort-button" (click)="sortByRelease()" 
+            [ngClass]="{ascending: sortingClass[1] === 1, disabled: sortingClass[1] === 0, descending: sortingClass[1] === -1}">
+            Date de sortie </button>
+            <button class="sort-button" (click)="sortByEdit()" 
+            [ngClass]="{ascending: sortingClass[2] === 1, disabled: sortingClass[2] === 0, descending: sortingClass[2] === -1}">
+            Dernière modification </button>
+            <button class="sort-button" (click)="sortByRating()"
+            [ngClass]="{ascending: sortingClass[3] === 1, disabled: sortingClass[3] === 0, descending: sortingClass[3] === -1}">
+            Rating 
+            </button>
+        </div>
+        <div class="movie" >
+            <ul *ngFor="let movie of this.movies$ | async">
+                <div [ngSwitch]="movie.editmode">
+                    <app-movie *ngSwitchCase="false" class="single-movie" [movie]="movie"></app-movie>
+                    <app-movie-edit *ngSwitchCase="true" class="single-movie" [movie]="movie"></app-movie-edit>
+                </div>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+
+

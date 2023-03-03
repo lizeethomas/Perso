@@ -1,0 +1,16 @@
+<div>
+ <mat-card class="main-form" [formGroup]="mainForm">
+    <mat-form-field appearance="fill">
+        <mat-label>Login</mat-label>
+        <input type="text" matInput formControlName="login">
+        <mat-error>Ce champ est requis</mat-error>
+    </mat-form-field> 
+    <mat-form-field appearance="fill">
+        <mat-label>Password</mat-label>
+        <input type="password" matInput formControlName="password">
+        <mat-error>Ce champ est requis</mat-error>
+    </mat-form-field>
+    <button (click)="submitForm(mainForm)" class="logbutton">CONNEXION</button>
+    <button (click)="moveToHome()" class="logbutton">ACCEDER AU SITE EN TANT QU'INVITE</button>
+ </mat-card>
+</div>

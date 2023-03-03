@@ -1,0 +1,43 @@
+<mat-card [ngClass]="comDisplay ? 'test' : ''">
+    <div class="main-movie" >
+        <div class="movie-img">
+            <img [src]="movie.url" [alt]="movie.title">
+        </div>
+        <div class="movie-content" >
+            <mat-card-header>
+                <mat-card-title>{{movie.title | titlecase }}</mat-card-title>
+                <mat-card-subtitle>{{movie.edited | date}}</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+                <ul *ngFor="let genre of genres; let index = index">
+                    <li>{{genre}}</li> 
+                </ul>
+                <p>Réalisateur: <span class="fade">{{movie.director}}</span> <br> Sortie: <span class="fade">{{movie.date}}</span></p>
+                <p>Note: <span class="fade">{{movie.rating}}/10</span></p>  
+                <hr>
+                <div (click)="changeComDisplay()" class="movie-commentary">
+                    <p *ngIf="!comDisplay"> {{movie.commentary | shorten: 400}} </p>
+                    <p *ngIf="comDisplay"> {{movie.commentary}} </p>
+                </div>
+            </mat-card-content>
+            <ul *ngIf="!deleteMode">
+                <div>
+                    <button *ngIf="admin" class="delete-button" (click)="setDeleteMode()">Delete</button>
+                </div>
+                <div>
+                    <button *ngIf="admin" class="edit-button" (click)="setEditMode()">Edit</button>
+                </div>
+            </ul>
+            <ul *ngIf="deleteMode">
+                <hr>
+                <a>Are you sure ?!</a>
+                <div>
+                    <button *ngIf="admin" class="delete-button" (click)="deleteMovie()">YES</button>
+                </div>
+                <div>
+                    <button *ngIf="admin" class="edit-button" (click)="setDeleteMode()">NO</button>
+                </div>
+            </ul>
+        </div>
+    </div>
+</mat-card> 

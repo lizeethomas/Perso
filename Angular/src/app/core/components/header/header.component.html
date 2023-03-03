@@ -1,0 +1,15 @@
+<mat-toolbar class="header">
+    <span class="title">My Website</span>
+    <ul>
+        <a routerLink="/login" class="link">Home</a>
+        <a routerLink="/movies" class="link">Films</a>
+        <a routerLink="/map" class="link">Voyages</a>
+        <a routerLink="/CV" class="link">CV</a>
+    </ul>
+    <span class="fill-space"></span>
+
+    <div *ngIf="status"> 
+        <a class="link" >{{logged}}</a>
+        <button (click)="logout()"> Logout </button>
+    </div>
+</mat-toolbar>

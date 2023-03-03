@@ -1,0 +1,45 @@
+
+<div class="location">
+    <h3>Lieu sélectionné</h3>
+    <p>
+        <b>Point:</b>  {{location.name}} <a *ngIf="location.city"> - {{location.city}}</a>
+    </p> 
+    <p>
+        <b>Coordonées GPS:</b> [{{location.latitude}},{{location.longitude}}]
+    </p>
+    <p *ngIf="!location.id">
+        <button (click)="onSave(location)">Save location</button>
+    </p>
+    <p *ngIf="location.id">
+        <button *ngIf="!editMode" (click)="setEditMode()">Add picture</button>
+        <button *ngIf="editMode" (click)="setEditMode()">Cancel</button>
+        <button *ngIf="admin" (click)="deleteLocation()">Delete location</button>
+    </p>
+    <div *ngIf="location.pictures && editMode === false">
+        <div *ngFor="let picture of location.pictures">
+            <hr>
+            <h3>{{picture.title}}</h3>
+            <img class="picture" [src]="picture.pictureUrl" [alt]="picture.title">
+            <p>
+                {{picture.description}}
+            </p>
+        </div>
+    </div>
+    <div *ngIf="editMode === true">
+        <mat-form [formGroup]="mainForm">
+            <mat-form-field appeareance="fill">
+                <mat-label>Titre</mat-label>
+                <input type="text" matInput formControlName="title">
+            </mat-form-field>
+            <mat-form-field appeareance="fill"> 
+                <mat-label>URL</mat-label>
+                <input type="text" matInput formControlName="url">
+            </mat-form-field>
+            <mat-form-field appeareance="fill">
+                <mat-label>Description</mat-label>
+                <textarea rows="4" type="text" matInput formControlName="description"></textarea>
+            </mat-form-field>
+            <button (click)="savePicture()">Save</button>
+        </mat-form>
+    </div>
+</div>

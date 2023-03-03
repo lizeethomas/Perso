@@ -1,0 +1,82 @@
+.fade {
+    color: #776666
+}
+
+h1 {
+    color: white;
+    font-style: oblique;
+}
+
+.movies {
+    margin: 20px;
+    padding: 10px;
+    box-sizing: border-box;
+    box-shadow: inset;
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    
+}
+
+.main-form {
+}
+
+.grid {
+    display: flex;
+    
+}
+
+.form-button {
+    height: 50px;
+    width: 100px
+}
+
+.form {
+    height: 40px;
+}
+
+.single-movie {
+    margin-bottom: 20px;
+    background-color: rgb(177, 227, 255);
+    box-shadow: inset;
+    width: 95%;
+}
+
+mat-card-title {
+    font-weight: bold;
+    font-style: oblique;
+    font-size: 140%;
+}
+
+.movie-button {
+    width: 30%;
+    margin: 5%;
+}
+
+.main-movie {
+    border-style: outset;
+    border-color: rgb(169, 187, 238);
+}
+
+.movie-img {
+    float:left;
+    width: 30%;
+}
+
+.movie-content {
+    float:right;
+    width: 70%;
+}
+
+img {
+    width: 100%;
+    display: block;
+}
+
+.commentary {
+    padding-top: 10px;
+    width: 75%;
+}
+
+.checkboxes {
+    display: inline-block;
+    width:30%; 
+}

@@ -1,0 +1,115 @@
+.fade {
+    color: #776666
+}
+
+h1 {
+    color: white;
+    font-style: oblique;
+}
+
+.grid {
+    display: flex;
+}
+
+mat-card-title {
+    font-weight: bold;
+    font-style: oblique;
+    font-size: 140%;
+}
+
+.tmdb {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 30% 60%;
+    margin-left: 30px;
+    margin-right: 50px;
+    margin-top: 20px;
+}
+.part1 {
+    height: 100%;
+    margin-right: 1em;
+}
+
+.part2 {
+    height: 80%;
+}
+
+.form {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 70% 30%;
+    margin-bottom: 20px;
+}
+.form-field {
+    width: 100%;
+}
+.form-button {
+    width: 100%;
+}
+.picker {
+    width:100%;
+}
+
+.found {
+}
+.result {
+}
+.list-found {
+}
+
+
+
+// img {
+//     max-width: 100%;
+//     max-height: 100%;
+//     display: block;
+// }
+
+.single-movie {
+    margin-bottom: 20px;
+    width: 95%;
+    height: auto;
+}
+
+.movie {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 50% 50%;
+}
+
+
+
+.all-movies {
+    padding-top: 30px;
+    width: 100%;
+}
+
+.movies {
+    margin-left: 3%;
+    padding: 10px;
+    margin-right: 5%;
+    box-sizing: border-box;
+    box-shadow: inset;
+    
+}
+
+.sorting {
+    padding: 10px;
+}
+
+.sort-button {
+    padding:10px;
+    margin-right: 10px;
+}
+
+.active {
+    color: red;
+}
+
+.ascending {
+    color: red
+}
+
+.descending {
+    color: blue
+}

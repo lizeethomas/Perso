@@ -1,0 +1,32 @@
+
+<h2> Carte des voyages</h2>
+
+<div class="map-content">
+    <div class="left-side">
+        <div id="map" class="map"></div>
+    </div>
+
+    <div class="right-side" *ngIf="selected$ | async; let current">
+        <app-location *ngIf="current.name !== undefined" [location]="current"></app-location>
+    </div>
+</div>
+
+<br>
+<!-- <button (click)="setZoomOut()">Zoom Out</button> -->
+
+<div class="query-content">
+    <div class="location-query">
+        <input class="form-field" matInput type="text" [formControl]="searchForm">
+        <button (click)="findLocation(searchForm.value)">SEARCH</button>
+    </div>
+    <div class="location-result">
+        <div *ngIf="(queries$ | async) !== null">
+            <div *ngFor="let query of queries$ | async">
+                <li style="list-style-type: none">
+                    <button (click)="setPinOnMap(query)">{{query.display_name}}</button>
+                </li>
+            </div>    
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,50 @@
+
+
+h2 {
+    margin-left: 10px;
+    color: white;
+    font-style: oblique;
+}
+
+.query-content {
+    height: 45%;
+    position: fixed;
+}
+
+.map-content {
+    height: 55%;
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+
+.left-side {
+    float: left;
+    width: 45%;
+    .map {
+        height: 500px;
+        width: 100%;
+    }
+    margin-left: 3%;
+    //max-height: 100%;
+}
+
+.right-side {
+    float: right;
+    width: 45%;
+    margin-right: 3%;
+    //max-height: 100%;
+}
+
+.location-query {
+    padding-bottom: 10px;
+    float: left;
+    width: 50%;
+}
+
+.location-result {
+    float: left; 
+}
+
+.map {
+    max-height: 100%;
+}

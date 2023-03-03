@@ -1,0 +1,22 @@
+.header {
+    background-color: rgb(10, 29, 92);
+}
+
+.title {
+    font-family: "Raleway";
+    font-weight: bold;
+    color: white;
+    font-size: 150%;
+}
+
+.link {
+    font-size: 120%;
+    color: rgb(212, 212, 212);
+    font-family: "Raleway";
+    text-decoration: none;
+    padding: 20px
+}
+
+.fill-space {
+    flex: 1 1 auto;
+}
