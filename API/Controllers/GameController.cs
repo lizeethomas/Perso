@@ -75,11 +75,15 @@ namespace MyWebsite.Controllers
             return Ok(pokemonDTO);
         }
 
-        [HttpPost("{name}")]
+        [HttpGet("/image/{name}")]
         public IActionResult GetUrl(string name)
         {
             string url = _gameService.GetImgUrl(name);
-            return Ok(url);
+            UrlDTO result = new UrlDTO()
+            {
+                Url = url,
+            };
+            return Ok(result);
         }
 
     }
