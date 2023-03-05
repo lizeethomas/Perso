@@ -12,6 +12,8 @@ export class CvComponent implements OnInit {
 
   cvItems$!:Observable<CVItem[]>;
 
+  url:string = "https://www.pokepedia.fr/Fichier:Deusolourdo_(Forme_Double)-EV.png";
+
   constructor(private cvService: CvService) {
 
   }
