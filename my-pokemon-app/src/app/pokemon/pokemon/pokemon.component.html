@@ -1,8 +1,13 @@
 
-<div *ngIf="pokemon$ | async; let pokemon">
-    {{pokemon.name}}
+
+<div class="content">
+    <div *ngIf="pokemon$ | async; let pokemon">
+        {{pokemon.name}}
+    </div>
+    
+    <div *ngIf="url$ | async; let url">
+        <img class="img" [src]="url.url">
+    </div>
+
 </div>
 
-<div *ngIf="url$ | async; let url">
-    <img class="img" [src]="url.url">
-</div>

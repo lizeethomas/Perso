@@ -29,13 +29,26 @@ namespace MyWebsite.Controllers
             return BadRequest();
         }
 
-        [HttpGet("{size}")]
+        [HttpGet("{size:int}")]
         public IActionResult CropImg(int size)
         {
             Bitmap bitmap = _gameService.Crop(size);
             if (bitmap != null)
             {
                 return Ok(bitmap);
+            }
+            return BadRequest();
+        }
+
+        [HttpPost]
+        public IActionResult GetCropImg([FromBody] RequestGameDTO dto)
+        {
+            string str = dto.Url;
+            int nb = dto.Size;
+            string newurl = _gameService.CropFromURL(nb, str);
+            if (newurl != null)
+            {
+                return Ok(newurl);
             }
             return BadRequest();
         }
@@ -84,6 +97,13 @@ namespace MyWebsite.Controllers
                 Url = url,
             };
             return Ok(result);
+        }
+
+        [HttpGet("/bitmap/{name}")]
+        public IActionResult GetBitmap(string name)
+        {
+            Bitmap bitmap = _gameService.GetImgBitmap(name);
+            return Ok(bitmap);
         }
 
     }
