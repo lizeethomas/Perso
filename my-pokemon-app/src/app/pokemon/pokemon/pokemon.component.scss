@@ -3,9 +3,47 @@
 .content {
     margin:auto;
     text-align: center;
-    width: 80%;
+    width: 47%; 
+    background-color: rgb(96, 96, 190);;
 }
 
-.img {
-    width: 300px;
+.name {
+    color: white;
+    font-size: 30px;
+}
+
+.img-solution {
+    width: 80%;
+    margin-bottom: 30px;
+    margin-top: 30px
+}
+ 
+.img-game {
+    width: 100%;
+}
+
+.game-content {
+    border: 3px solid rgb(96, 96, 190);
+}
+
+.div-form {
+    margin-top: 10px;
+    background-color:rgb(96, 96, 190);
+    width: 100%;
+    height: 100%;
+}
+
+.guess-form {
+    text-align: center;
+    width: 100%;
+    column-gap: 10px;
+}
+
+.guess-input {
+    height: 30px;
+    width: 70%;
+}
+
+.guess-button {
+    margin-left: 20px;
 }

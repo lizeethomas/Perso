@@ -17,12 +17,7 @@ namespace MyWebsite.Services
     public class GameService
     {
         private string filepath = "E:\\Bureau\\MyWebsite\\MyWebsite\\API\\Data\\pokedex_names_types.txt";
-        private string imagepath = "E:\\Bureau\\MyWebsite\\MyWebsite\\API\\Data\\image.jpg";
-        private string newimagepath = "E:\\Bureau\\MyWebsite\\MyWebsite\\API\\Data\\new_image.jpg";
-
         //private string filepath = "C:\\Users\\tlizee\\CODE\\MyWebsite\\API\\Data\\pokedex_names_types.txt";
-        //private string imagepath = "C:\\Users\\tlizee\\CODE\\MyWebsite\\API\\Data\\image.jpg";
-        //private string newimagepath = "C:\\Users\\tlizee\\CODE\\MyWebsite\\API\\Data\\new_image.jpg";
 
 
         public GameService() { }
@@ -85,6 +80,7 @@ namespace MyWebsite.Services
 
                     Bitmap bitmap = new Bitmap(image);
                     int[,] pixels = new int[bitmap.Width, bitmap.Height];
+                    int[,] alphas = new int[bitmap.Width, bitmap.Height];
 
                     for (int x = 0; x < bitmap.Width; x++)
                     {
@@ -96,9 +92,11 @@ namespace MyWebsite.Services
                             int b = pixelColor.B;
                             int rgb = (r << 16) + (g << 8) + b;
                             pixels[x, y] = rgb;
+                            alphas[x ,y] = pixelColor.A;
                         }
                     }
                     imgByteDTO.Pixels = pixels;
+                    imgByteDTO.Alphas = alphas;
                 }
             }
             return imgByteDTO;
@@ -115,7 +113,7 @@ namespace MyWebsite.Services
             {
                 Bitmap mask = new Bitmap(newImg.Width, newImg.Height);
                 Graphics gr = Graphics.FromImage(mask);
-                gr.Clear(Color.Black);
+                gr.Clear(Color.White);
 
                 int x = pos[0];
                 int y = pos[1];
@@ -130,6 +128,10 @@ namespace MyWebsite.Services
                         int b = rgb & 0xff;
                         Color pixelColor = Color.FromArgb(r, g, b);
                         mask.SetPixel(i, j, pixelColor); //img.GetPixel(pos[0], pos[1])
+                        if (newImg.Alphas[i,j] == 0)
+                        {
+                            mask.SetPixel(i, j, Color.White);
+                        }
                     }
                 }
                 //}

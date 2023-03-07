@@ -1,12 +1,27 @@
 
 
 <div class="content">
-    <div *ngIf="pokemon$ | async; let pokemon">
-        {{pokemon.name}}
-    </div>
     
-    <div *ngIf="url$ | async; let url">
-        <img class="img" [src]="url.url">
+    <div *ngIf="gameStatus">
+        <div class="name" *ngIf="pokemon$ | async; let pokemon">
+            {{pokemon.name + " #" + pokemon.dex}}
+        </div>
+        <div *ngIf="url$ | async; let url">
+            <img class="img-solution" [src]="url.url">
+        </div>
+    </div>
+
+    <div class="game-content" *ngIf="!gameStatus">
+        <div *ngIf="image$ | async; let game">
+            <img class="img-game" [src]="game.url">
+        </div>
+    </div>
+
+    <div class="div-form">
+        <form class="guess-form">
+            <input class="guess-input" type="text" matInput [formControl]="guessCtrl" placeholder="Guess here !">
+            <button class="guess-button" (click)="onSubmit()">Valider</button>
+        </form>
     </div>
 
 </div>

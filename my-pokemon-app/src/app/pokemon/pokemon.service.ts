@@ -5,6 +5,8 @@ import { Pokemon } from './models/pokemon';
 import { environments } from 'src/environments/environments';
 import { Url } from './models/url';
 import { Bitmap } from './models/bitmap';
+import { Setup } from './models/setup';
+import { Game } from './models/game';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +17,7 @@ export class PokemonService {
 
   private _pokemon$ = new BehaviorSubject<Pokemon>(new Pokemon);
   private _url$ = new BehaviorSubject<Url>(new Url);
-  private _image$ = new BehaviorSubject<Bitmap>(new Bitmap(0, 0));
+  private _image$ = new BehaviorSubject<Game>(new Game);
 
   public imageSrc!: string;
 
@@ -51,29 +53,18 @@ export class PokemonService {
     }
   } 
 
-  getBitmap(name:string) : void {
-    if (name !== undefined) {
-      this.http.get<Bitmap>(`${environments.apiUrl}/bitmap/`+ name).pipe(
-        tap(b => {
-            this._image$.next(b);
-            console.log(b);
-        })
-      ).subscribe(); 
-    }
-  } 
-
-  cropImg(url:string, size:number) : string {
-    if (url !== undefined) {
-      this.http.get(`${environments.apiUrl}/game/`+ url + '/' + size, {responseType:'blob'}).pipe(
-      ).subscribe((response) => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          this.imageSrc = reader.result as string;
-        };
-        reader.readAsDataURL(response);
-        return this.imageSrc;
+  getGame(setup:Setup) : void {
+    if (setup.url !== undefined) {
+      //console.log(setup.url);
+      const headers:HttpHeaders = new HttpHeaders({
+        "Content-Type" : "application/json"
       });
+      this.http.post<Game>(`${environments.apiUrl}/game/setup`, setup, {headers}).pipe(
+        tap((game:Game) => {
+          this._image$.next(game);
+        })
+      ).subscribe();
     }
-    return "";
   }
+
 }

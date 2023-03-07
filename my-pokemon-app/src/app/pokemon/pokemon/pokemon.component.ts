@@ -4,6 +4,10 @@ import { PokemonService } from '../pokemon.service';
 import { Observable, tap, delay, take, switchMap } from 'rxjs';
 import { Url } from '../models/url';
 import { Bitmap } from '../models/bitmap';
+import { Setup } from '../models/setup';
+import { Game } from '../models/game';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-pokemon',
@@ -16,50 +20,74 @@ export class PokemonComponent implements OnInit, AfterViewInit {
 
   pokemon$!:Observable<Pokemon>;
   url$!:Observable<Url>;
-  image$!:Observable<Bitmap>;
+  image$!:Observable<Game>;
   pokemon!:Pokemon;
-  url!:string;
+  mainForm!:FormGroup;
+  guessCtrl!:FormControl;
 
-  constructor(private pokemonService: PokemonService) { }
+  try!:string;
+
+  gameStatus!:boolean;
+
+  constructor(private pokemonService: PokemonService, private fb:FormBuilder) { }
 
    ngOnInit(): void {
+      this.gameStatus = false;
+      this.initFormControl();
       this.initObservable();
       this.getPokemon();
       this.getImg();
    }
 
    ngAfterViewInit(): void {
-      this.getCropImg(100);
+      this.getGame(100);
    }
 
-  initObservable() {
+  initObservable() : void  {
     this.pokemon$ = this.pokemonService.pokemon$;
     this.url$ = this.pokemonService.url$;
     this.image$ = this.pokemonService.image$;
   }
 
-  getPokemon() {
+  initFormControl() : void  {
+    this.guessCtrl = this.fb.control("", Validators.required);
+  }
+
+  getPokemon() : void  {
     this.pokemonService.getRandomPokemon();
   }
 
-  getImg() {
+  getImg() : void  {
     this.pokemon$.subscribe({
       next: (value:Pokemon) => {
         this.pokemon = value;
         this.pokemonService.getImgUrl(this.pokemon.name);
-        this.pokemonService.getBitmap(this.pokemon.name);
       }
     })
   }
 
-  getCropImg(size:number) {
-    this.url$.subscribe({
-      next: (value:Url) => {
-        this.url = value.url;
-        this.url = this.pokemonService.cropImg(this.url, size);
-        console.log(this.url);
+  getGame(size:number) {
+    let setup:Setup = new Setup();
+    this.url$.pipe().subscribe({
+      next: (url) => {
+        setup.url = url.url;
+        setup.size = size;
+        this.pokemonService.getGame(setup);
       }
-    })
+    });
   }
- 
+
+  onSubmit() : void {
+    event?.preventDefault();
+    this.try = this.guessCtrl.value;
+    if (this.try == this.pokemon.name) {
+      this.gameStatus = true;
+      console.log(this.pokemon.name)
+    }
+    this.initFormControl();
+  } 
+
+  verifGame() {
+
+  }
 }

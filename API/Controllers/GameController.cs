@@ -64,8 +64,14 @@ namespace MyWebsite.Controllers
         [HttpPost("setup")]
         public IActionResult Setup([FromBody] RequestGameDTO dto)
         {
+            ResponseGameDTO responseGameDTO = new ResponseGameDTO();
             var str = _gameService.SetUpGame(dto.Url, dto.Size);
-            return Ok(str);
+            if (str != null)
+            {
+                responseGameDTO.Url = str;
+                return Ok(responseGameDTO);
+            }
+            return NotFound();
         }
 
         [HttpGet("/image/{name}")]

@@ -7,4 +7,6 @@ import { Component } from '@angular/core';
 })
 export class HeaderComponent {
 
+  logo:string = "../../assets/Pokeguessr_logo.png"
+
 }
