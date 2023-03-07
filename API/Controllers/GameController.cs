@@ -18,39 +18,12 @@ namespace MyWebsite.Controllers
             _gameService = gameService;
         }
 
-        [HttpGet]
-        public IActionResult SaveImg(string url)
+        [HttpGet("/custom_game/{size}")]
+        public IActionResult Jeu(int size)
         {
-            Bitmap bitmap = _gameService.GetImage(url);
-            if (bitmap != null)
-            {
-                return Ok(bitmap);
-            }
-            return BadRequest();
-        }
-
-        [HttpGet("{size:int}")]
-        public IActionResult CropImg(int size)
-        {
-            Bitmap bitmap = _gameService.Crop(size);
-            if (bitmap != null)
-            {
-                return Ok(bitmap);
-            }
-            return BadRequest();
-        }
-
-        [HttpPost]
-        public IActionResult GetCropImg([FromBody] RequestGameDTO dto)
-        {
-            string str = dto.Url;
-            int nb = dto.Size;
-            string newurl = _gameService.CropFromURL(nb, str);
-            if (newurl != null)
-            {
-                return Ok(newurl);
-            }
-            return BadRequest();
+            string[] data = _gameService.Jeu(size);
+            Console.WriteLine(data[1]);
+            return Ok(data[0]);
         }
 
         [HttpGet("/pokemon/all")]
@@ -86,6 +59,13 @@ namespace MyWebsite.Controllers
             };
 
             return Ok(pokemonDTO);
+        }
+
+        [HttpPost("setup")]
+        public IActionResult Setup([FromBody] RequestGameDTO dto)
+        {
+            var str = _gameService.SetUpGame(dto.Url, dto.Size);
+            return Ok(str);
         }
 
         [HttpGet("/image/{name}")]

@@ -7,34 +7,25 @@ using MyWebsite.Exceptions;
 using static System.Net.Mime.MediaTypeNames;
 using HtmlAgilityPack;
 using System.Drawing.Imaging;
+using Image = System.Drawing.Image;
+using MyWebsite.DTOs;
+using System.Runtime.InteropServices;
+using static Azure.Core.HttpHeader;
 
 namespace MyWebsite.Services
 {
     public class GameService
     {
-        //private string filepath = "E:\\Bureau\\MyWebsite\\MyWebsite\\API\\Data\\pokedex_names_types.txt";
-        //private string imagepath = "E:\\Bureau\\MyWebsite\\MyWebsite\\API\\Data\\image.jpg";
-        //private string newimagepath = "E:\\Bureau\\MyWebsite\\MyWebsite\\API\\Data\\new_image.jpg";
+        private string filepath = "E:\\Bureau\\MyWebsite\\MyWebsite\\API\\Data\\pokedex_names_types.txt";
+        private string imagepath = "E:\\Bureau\\MyWebsite\\MyWebsite\\API\\Data\\image.jpg";
+        private string newimagepath = "E:\\Bureau\\MyWebsite\\MyWebsite\\API\\Data\\new_image.jpg";
 
-        private string filepath = "C:\\Users\\tlizee\\CODE\\MyWebsite\\API\\Data\\pokedex_names_types.txt";
-        private string imagepath = "C:\\Users\\tlizee\\CODE\\MyWebsite\\API\\Data\\image.jpg";
-        private string newimagepath = "C:\\Users\\tlizee\\CODE\\MyWebsite\\API\\Data\\new_image.jpg";
+        //private string filepath = "C:\\Users\\tlizee\\CODE\\MyWebsite\\API\\Data\\pokedex_names_types.txt";
+        //private string imagepath = "C:\\Users\\tlizee\\CODE\\MyWebsite\\API\\Data\\image.jpg";
+        //private string newimagepath = "C:\\Users\\tlizee\\CODE\\MyWebsite\\API\\Data\\new_image.jpg";
 
 
         public GameService() { }
-
-        public Bitmap GetImage(string url)
-        {
-            string path = this.imagepath;
-
-            var webRequest = WebRequest.Create(url);
-            var webResponse = webRequest.GetResponse();
-            var stream = webResponse.GetResponseStream();
-            Bitmap bitmap = new Bitmap(stream);
-           
-            bitmap.Save(path);
-            return bitmap;
-        }
 
         public Bitmap GetImgFromURL(string url)
         {
@@ -57,95 +48,118 @@ namespace MyWebsite.Services
             return bitmap;
         }
 
-        public Bitmap Crop(int size)
+        public Bitmap UrlToBitmap(string url)
         {
-            string path = this.imagepath;
-            string exit = this.newimagepath;
-
-            Bitmap oldImg = new Bitmap(path);
-            Bitmap newImg = oldImg;
-
-            var pos = GetRandomXY(size, path);
-
-            try
+            WebRequest request = WebRequest.Create(url);
+            using (WebResponse response = request.GetResponse())
+            using (Stream stream = response.GetResponseStream())
             {
-                if (pos == null)
+                Bitmap bitmap = new Bitmap(stream);
+
+                // Convertir l'image au format BMP
+                using (MemoryStream memoryStream = new MemoryStream())
                 {
-                    throw new PosNotFoundExcpetion();
+                    bitmap.Save(memoryStream, ImageFormat.Bmp);
+                    return bitmap;
+                    // Utiliser l'image BMP ici
                 }
-                int x = pos[0];
-                int y = pos[1];
-
-                Rectangle rectangle = new Rectangle(x - size / 2, y - size / 2, size, size);
-                newImg = oldImg.Clone(rectangle, oldImg.PixelFormat);
-                newImg.Save(exit);
-                return newImg;
             }
-            catch(PosNotFoundExcpetion)
-            {
-                return null;
-            }
-            finally
-            {
-                oldImg.Dispose();
-                newImg.Dispose();
-            }
+            return null;
 
         }
 
-
-        public string CropFromURL(int size, string url)
+        public ImgByteDTO UrlToByte(string url)
         {
-
-            Bitmap oldImg = GetImgFromURL(url);
-            Bitmap newImg = oldImg;
-
-            var pos = GetRandomPos(size, oldImg);
-
-            try
+            ImgByteDTO imgByteDTO = new ImgByteDTO();
+            using (var webClient = new WebClient())
             {
-                if (pos == null)
+                byte[] imageData = webClient.DownloadData(url);
+                imgByteDTO.Data = imageData;
+
+                // Stocker l'image dans un tableau 2D de bytes
+                using (var ms = new MemoryStream(imageData))
                 {
-                    throw new PosNotFoundExcpetion();
+                    var image = Image.FromStream(ms);
+                    imgByteDTO.Width = image.Width;
+                    imgByteDTO.Height = image.Height;
+
+                    Bitmap bitmap = new Bitmap(image);
+                    int[,] pixels = new int[bitmap.Width, bitmap.Height];
+
+                    for (int x = 0; x < bitmap.Width; x++)
+                    {
+                        for (int y = 0; y < bitmap.Height; y++)
+                        {
+                            Color pixelColor = bitmap.GetPixel(x, y);
+                            int r = pixelColor.R;
+                            int g = pixelColor.G;
+                            int b = pixelColor.B;
+                            int rgb = (r << 16) + (g << 8) + b;
+                            pixels[x, y] = rgb;
+                        }
+                    }
+                    imgByteDTO.Pixels = pixels;
                 }
-                int x = pos[0];
-                int y = pos[1];
-
-                Rectangle rectangle = new Rectangle(x - size / 2, y - size / 2, size, size);
-                PixelFormat pixelFormat = oldImg.PixelFormat;
-                newImg = oldImg.Clone(rectangle, PixelFormat.Format32bppArgb);
-
-                MemoryStream stream = new MemoryStream();
-                newImg.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
-                byte[] bytes = stream.ToArray();
-                string base64 = Convert.ToBase64String(bytes);
-                string dataUrl = $"data:image/png;base64,{base64}";
-                return dataUrl;
             }
-            catch (PosNotFoundExcpetion)
-            {
-                return null;
-            }
-            finally
-            {
-                oldImg.Dispose();
-                newImg.Dispose();
-            }
-
+            return imgByteDTO;
         }
 
-        public int[] GetRandomXY(int size, string path)
+        public string SetUpGame(string url, int size)
         {
-            Bitmap img = new Bitmap(path);
+
+            ImgByteDTO newImg = UrlToByte(url);
+            var pos = GetRandomPos(size, newImg.Width, newImg.Height);
+            string str = null;
+
+            if (newImg != null)
+            {
+                Bitmap mask = new Bitmap(newImg.Width, newImg.Height);
+                Graphics gr = Graphics.FromImage(mask);
+                gr.Clear(Color.Black);
+
+                int x = pos[0];
+                int y = pos[1];
+            
+                for (int i = x-size/2; i < x+size/2; i++)
+                {
+                    for (int j = y-size/2; j < y+size/2; j++)
+                    {
+                        int rgb = newImg.Pixels[i, j];
+                        int r = (rgb >> 16) & 0xff;
+                        int g = (rgb >> 8) & 0xff;
+                        int b = rgb & 0xff;
+                        Color pixelColor = Color.FromArgb(r, g, b);
+                        mask.SetPixel(i, j, pixelColor); //img.GetPixel(pos[0], pos[1])
+                    }
+                }
+                //}
+                str = BitmapToUrl(mask);
+            }
+            return str;
+        }
+
+        public string BitmapToUrl(Bitmap img)
+        {
+            Bitmap image = new Bitmap(img);
+            MemoryStream stream = new MemoryStream();
+            image.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+            byte[] bytes = stream.ToArray();
+            string base64 = Convert.ToBase64String(bytes);
+            string dataUrl = $"data:image/png;base64,{base64}";
+            return dataUrl;
+        }
+
+        public int[] GetRandomPos(int size, int width, int height)
+        {
             try
             {
-                if (size > img.Width || size > img.Height)
+                if (size > width || size > height)
                 {
                     throw new OutOfTheBoxException();
                 }
                 Random rng = new Random();
-                int x = rng.Next(size/2, img.Width - size / 2);
-                int y = rng.Next(size/2, img.Height - size / 2);
+                int x = rng.Next(size / 2, width - size / 2);
+                int y = rng.Next(size / 2, height - size / 2);
 
                 int[] result = { x, y };
                 return result;
@@ -158,34 +172,6 @@ namespace MyWebsite.Services
             }
             finally
             {
-                img.Dispose();
-            }
-        }
-
-        public int[] GetRandomPos(int size, Bitmap bitmap)
-        {
-            try
-            {
-                if (size > bitmap.Width || size > bitmap.Height)
-                {
-                    throw new OutOfTheBoxException();
-                }
-                Random rng = new Random();
-                int x = rng.Next(size / 2, bitmap.Width - size / 2);
-                int y = rng.Next(size / 2, bitmap.Height - size / 2);
-
-                int[] result = { x, y };
-                return result;
-
-            }
-            catch (OutOfTheBoxException)
-            {
-                Console.Error.WriteLine("Crop size greater than source image");
-                return null;
-            }
-            finally
-            {
-                bitmap.Dispose();
             }
         }
 
@@ -209,11 +195,6 @@ namespace MyWebsite.Services
                 // Récupérer l'URL de l'image à partir de l'attribut src de l'élément img
                 imageUrl += imageNode?.GetAttributeValue("src", "");
 
-                // Télécharger l'image à partir de l'URL
-                //if (!string.IsNullOrEmpty(imageUrl))
-                //{
-                //    client.DownloadFile(imageUrl, "nom de fichier.png");
-                //}
             }
 
             return imageUrl;
@@ -282,5 +263,65 @@ namespace MyWebsite.Services
             return result;
         }
 
+        public string[] Jeu(int size)
+        {
+            Random rnd = new Random();
+            int randomNumber = rnd.Next(1, 1011);
+            List<string> result = GetPkmnInfo(randomNumber);
+            PokemonDTO pokemonDTO = new PokemonDTO()
+            {
+                Dex = int.Parse(result[0]),
+                Name = result[1],
+                Type1 = result[2],
+                Type2 = result[result.Count - 1],
+            };
+            string url = GetImgUrl(pokemonDTO.Name);
+            UrlDTO dto = new UrlDTO()
+            {
+                Url = url,
+            };
+            string str = SetUpGame(dto.Url, size);
+            string[] exit = { str, pokemonDTO.Name };
+            return exit;
+        }
+
+
     }
 }
+
+
+//public Bitmap Crop(int size)
+//{
+//    string path = this.imagepath;
+//    string exit = this.newimagepath;
+
+//    Bitmap oldImg = new Bitmap(path);
+//    Bitmap newImg = oldImg;
+
+//    var pos = GetRandomXY(size, path);
+
+//    try
+//    {
+//        if (pos == null)
+//        {
+//            throw new PosNotFoundExcpetion();
+//        }
+//        int x = pos[0];
+//        int y = pos[1];
+
+//        Rectangle rectangle = new Rectangle(x - size / 2, y - size / 2, size, size);
+//        newImg = oldImg.Clone(rectangle, oldImg.PixelFormat);
+//        newImg.Save(exit);
+//        return newImg;
+//    }
+//    catch (PosNotFoundExcpetion)
+//    {
+//        return null;
+//    }
+//    finally
+//    {
+//        oldImg.Dispose();
+//        newImg.Dispose();
+//    }
+
+//}
