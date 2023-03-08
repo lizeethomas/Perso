@@ -29,6 +29,15 @@
                 </div>
             </div>
         </div>
+
+        <div *ngIf="!gameStatus">
+            <div *ngIf="!typeHint">
+                <img class="type1" [src]="unknownType"><img *ngIf="type2" class="type2" [src]="unknownType">
+            </div>
+            <div *ngIf="typeHint">
+                <img class="type1" [src]="type1"><img *ngIf="type2" class="type2" [src]="type2">
+            </div>
+        </div>
     
         <div class="div-form">
             <form class="guess-form">
@@ -39,15 +48,27 @@
     
         <div class="hints" *ngIf="!gameStatus">
             <div *ngIf="shadowHint">
-                <mat-button-toggle class="shadow-hint" (change)="toggleImage($event)">
+                <mat-button-toggle class="hint" (change)="toggleImage($event)">
                     Ombre du Pokémon: 
                     <a [style.background-color]="shadowHintToggle ? 'green' : 'red'">
                         {{ shadowHintToggle ? 'ON' : 'OFF' }}
                     </a>
                 </mat-button-toggle>
             </div>
-            <div class="shadow-hint" *ngIf="!shadowHint">
+            <div class="hint" *ngIf="!shadowHint">
                 Ombre du Pokémon ? <button (click)="activeShadowHint()">-50 pts</button>
+            </div>
+            <div class="hint" *ngIf="!typeHint && type2">
+                Types du Pokémon ? <button (click)="revealType()">-25 pts</button>
+            </div>
+            <div class="hint" *ngIf="!typeHint && !type2">
+                Type du Pokémon ? <button (click)="revealType()">-25 pts</button>
+            </div>
+            <div class="hint" *ngIf="genHint == 0">
+                Génération du Pokémon ? <button (click)="getGen()">-20 pts</button>
+            </div>
+            <div class="hint" *ngIf="genHint != 0">
+                Pokémon de la {{genHint + "G"}}
             </div>
         </div>
     
@@ -57,6 +78,11 @@
         Votre score: {{this.score}} - Nombre d'essais: {{this.nbTry}}
     </div>
 
-</div>
+    <div class="other">
+        <div>
+            <button (click)="anotherRound()">Rejouer</button>
+            <button *ngIf="!gameStatus" (click)="giveUp()">Abandonner</button>
+        </div>
+    </div>
 
-<!-- <button class="guess-button btn" (click)="giveUp()">Abandonner</button> -->
+</div>

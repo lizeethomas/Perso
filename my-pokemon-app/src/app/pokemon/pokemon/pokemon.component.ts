@@ -28,9 +28,12 @@ export class PokemonComponent implements OnInit, AfterViewInit {
 
   type1!:string;
   type2!:string;
+  unknownType:string = "../../assets/types/Miniature_Type_Inconnu_EV.png"
 
   shadowHintToggle:boolean = false;
   shadowHint:boolean = false;
+  typeHint:boolean = false;
+  genHint:number = 0;
 
   score!:number;
   try!:string;
@@ -114,6 +117,41 @@ export class PokemonComponent implements OnInit, AfterViewInit {
     return v1.localeCompare(v2, "en", { sensitivity: "base" }) === 0;
   }
 
+  toggleImage(event:any) {
+    this.shadowHintToggle = !this.shadowHintToggle;
+  }
+
+  activeShadowHint() {
+    let val = this.score - 50;
+    if (this.verifScore(val)) {
+      this.shadowHint = true;
+      this.shadowHintToggle = !this.shadowHintToggle;
+    }
+  }
+
+  revealType() {
+    let val = this.score - 25;
+    if (this.verifScore(val)) {
+      this.typeHint = true;
+    }
+  }
+
+  getGen() {
+    let val = this.score - 20;
+    if (this.verifScore(val)) {
+      this.genHint = this.testGen(this.pokemon.dex);
+    }
+  }
+
+  verifScore(val:number) : boolean {
+    if (val < 0) {return false;}
+    else {this.score = val; return true;}
+  }
+
+  anotherRound() {
+    location.reload();
+  }
+
   giveUp() {
     event?.preventDefault();
     this.nbTry=0;
@@ -121,19 +159,37 @@ export class PokemonComponent implements OnInit, AfterViewInit {
     this.gameStatus = true;
   }
 
-  toggleImage(event:any) {
-    this.shadowHintToggle = !this.shadowHintToggle;
-  }
-
-  activeShadowHint() {
-    this.shadowHint = true;
-    this.shadowHintToggle = !this.shadowHintToggle;
-    let val = this.score - 50;
-    this.verifScore(val);
-  }
-
-  verifScore(val:number) {
-    if (val < 0) {this.score = 0;}
-    else (this.score = val);
+  testGen(dex:number) : number {
+    let val:number = 0;
+    switch(true) {
+      case (dex <= 151):
+        val = 1;
+        break;
+      case (dex <= 251):
+        val = 2;
+        break;
+      case (dex <= 386):
+        val = 3;
+        break;  
+      case (dex <= 493):
+        val = 4;
+        break;     
+      case (dex <= 649):
+        val = 5;
+        break;  
+      case (dex <= 721):
+        val = 6;
+        break;  
+      case (dex <= 807):
+        val = 7;
+        break; 
+      case (dex <= 898):
+        val = 8;
+        break; 
+      default:
+        val = 9;
+        break;
+    }
+    return val;
   }
 }

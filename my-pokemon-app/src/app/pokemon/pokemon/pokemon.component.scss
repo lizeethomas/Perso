@@ -66,17 +66,26 @@
     height: 50%;
 }
 
-.shadow-hint {
+.hint {
     color: white;
+    font-size: 20px;
+    padding-bottom: 10px;
 }
 
 .score {
     margin-top: 15px;
     margin-left: auto;
     margin-right: auto;
+    margin-bottom: 10px;
     text-align: center;
     width: 47%; 
     border: 1px solid black;
     font-size: 20px;
     padding: 3px;
+}
+
+.other {
+    margin:auto;
+    text-align: center;
+    width: 47%; 
 }
