@@ -74,6 +74,19 @@ namespace MyWebsite.Controllers
             return NotFound();
         }
 
+        [HttpGet("/shadow/{name}")]
+        public IActionResult Shadow(string name)
+        {
+            ResponseGameDTO responseGameDTO = new ResponseGameDTO();
+            var str = _gameService.SetUpShadow(name);
+            if (str != null)
+            {
+                responseGameDTO.Url = str;
+                return Ok(responseGameDTO);
+            }
+            return NotFound();
+        }
+
         [HttpGet("/image/{name}")]
         public IActionResult GetUrl(string name)
         {

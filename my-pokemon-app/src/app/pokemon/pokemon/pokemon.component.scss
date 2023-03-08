@@ -1,15 +1,18 @@
 
+.main {
+    height: 90%;
+}
 
 .content {
     margin:auto;
     text-align: center;
     width: 47%; 
-    background-color: rgb(96, 96, 190);;
+    background-color: rgb(96, 96, 190);
 }
 
 .name {
     color: white;
-    font-size: 30px;
+    font-size: 40px;
 }
 
 .img-solution {
@@ -37,13 +40,43 @@
     text-align: center;
     width: 100%;
     column-gap: 10px;
+    padding-bottom: 20px;
 }
 
 .guess-input {
     height: 30px;
-    width: 70%;
+    width: 60%;
+}
+
+.guess-buttons {
+    width: auto;
 }
 
 .guess-button {
     margin-left: 20px;
+    height: 35px;
+}
+
+.type1 {
+    width: 40%;
+    height: 50%;
+}
+.type2 {
+    width: 40%;
+    height: 50%;
+}
+
+.shadow-hint {
+    color: white;
+}
+
+.score {
+    margin-top: 15px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    width: 47%; 
+    border: 1px solid black;
+    font-size: 20px;
+    padding: 3px;
 }

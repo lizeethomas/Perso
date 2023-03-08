@@ -1,28 +1,62 @@
 
+<div class="main">
 
-<div class="content">
+    <div class="content">
     
-    <div *ngIf="gameStatus">
-        <div class="name" *ngIf="pokemon$ | async; let pokemon">
-            {{pokemon.name + " #" + pokemon.dex}}
+        <div *ngIf="gameStatus">
+            <div class="name" *ngIf="pokemon$ | async; let pokemon">
+                {{pokemon.name + " #" + pokemon.dex}}
+            </div>
+            <div *ngIf="url$ | async; let url">
+                <div>
+                    <img class="img-solution" [src]="url.url">
+                </div>
+                <div>
+                    <img class="type1" [src]="type1"><img *ngIf="type2" class="type2" [src]="type2">
+                </div>
+            </div>
         </div>
-        <div *ngIf="url$ | async; let url">
-            <img class="img-solution" [src]="url.url">
+    
+        <div class="game-content" *ngIf="!gameStatus">
+            <div *ngIf="!shadowHintToggle">
+                <div *ngIf="image$ | async; let game">
+                    <img class="img-game" [src]="game.url">
+                </div>
+            </div>
+            <div *ngIf="shadowHintToggle">
+                <div *ngIf="this.shadow$ | async; let shadow">
+                    <img class="img-game" [src]="shadow.url">
+                </div>
+            </div>
         </div>
+    
+        <div class="div-form">
+            <form class="guess-form">
+                <input class="guess-input" type="text" matInput [formControl]="guessCtrl" placeholder="Guess here !">
+                <button class="guess-button btn" (click)="onSubmit()">Valider</button>
+            </form>
+        </div>
+    
+        <div class="hints" *ngIf="!gameStatus">
+            <div *ngIf="shadowHint">
+                <mat-button-toggle class="shadow-hint" (change)="toggleImage($event)">
+                    Ombre du Pokémon: 
+                    <a [style.background-color]="shadowHintToggle ? 'green' : 'red'">
+                        {{ shadowHintToggle ? 'ON' : 'OFF' }}
+                    </a>
+                </mat-button-toggle>
+            </div>
+            <div class="shadow-hint" *ngIf="!shadowHint">
+                Ombre du Pokémon ? <button (click)="activeShadowHint()">-50 pts</button>
+            </div>
+        </div>
+    
     </div>
-
-    <div class="game-content" *ngIf="!gameStatus">
-        <div *ngIf="image$ | async; let game">
-            <img class="img-game" [src]="game.url">
-        </div>
-    </div>
-
-    <div class="div-form">
-        <form class="guess-form">
-            <input class="guess-input" type="text" matInput [formControl]="guessCtrl" placeholder="Guess here !">
-            <button class="guess-button" (click)="onSubmit()">Valider</button>
-        </form>
+    
+    <div class="score">
+        Votre score: {{this.score}} - Nombre d'essais: {{this.nbTry}}
     </div>
 
 </div>
 
+<!-- <button class="guess-button btn" (click)="giveUp()">Abandonner</button> -->

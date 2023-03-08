@@ -20,12 +20,21 @@ export class PokemonComponent implements OnInit, AfterViewInit {
 
   pokemon$!:Observable<Pokemon>;
   url$!:Observable<Url>;
+  shadow$!:Observable<Url>;
   image$!:Observable<Game>;
   pokemon!:Pokemon;
   mainForm!:FormGroup;
   guessCtrl!:FormControl;
 
+  type1!:string;
+  type2!:string;
+
+  shadowHintToggle:boolean = false;
+  shadowHint:boolean = false;
+
+  score!:number;
   try!:string;
+  nbTry:number = 0;
 
   gameStatus!:boolean;
 
@@ -33,6 +42,7 @@ export class PokemonComponent implements OnInit, AfterViewInit {
 
    ngOnInit(): void {
       this.gameStatus = false;
+      this.score = 100;
       this.initFormControl();
       this.initObservable();
       this.getPokemon();
@@ -46,6 +56,7 @@ export class PokemonComponent implements OnInit, AfterViewInit {
   initObservable() : void  {
     this.pokemon$ = this.pokemonService.pokemon$;
     this.url$ = this.pokemonService.url$;
+    this.shadow$ = this.pokemonService.shadow$;
     this.image$ = this.pokemonService.image$;
   }
 
@@ -61,7 +72,12 @@ export class PokemonComponent implements OnInit, AfterViewInit {
     this.pokemon$.subscribe({
       next: (value:Pokemon) => {
         this.pokemon = value;
+        this.type1 = "../../assets/types/Miniature_Type_" + value.type1 + "_EV.png";
+        if (value.type2 !== value.type1 && value.type2 !== null && value.type2 !== undefined) {
+          this.type2 = "../../assets/types/Miniature_Type_" + value.type2 + "_EV.png";
+        }
         this.pokemonService.getImgUrl(this.pokemon.name);
+        this.pokemonService.getShadow(this.pokemon.name);
       }
     })
   }
@@ -80,14 +96,44 @@ export class PokemonComponent implements OnInit, AfterViewInit {
   onSubmit() : void {
     event?.preventDefault();
     this.try = this.guessCtrl.value;
-    if (this.try == this.pokemon.name) {
+    if (this.testWin(this.try, this.pokemon.name)) {
       this.gameStatus = true;
       console.log(this.pokemon.name)
     }
-    this.initFormControl();
+    else {
+      this.initFormControl();
+      let val = this.score - 5;
+      this.verifScore(val);
+    }
+    this.nbTry++;
   } 
 
-  verifGame() {
+  testWin(str1:string, str2:string) : boolean {
+    const v1 = str1.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    const v2 = str2.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    return v1.localeCompare(v2, "en", { sensitivity: "base" }) === 0;
+  }
 
+  giveUp() {
+    event?.preventDefault();
+    this.nbTry=0;
+    this.score=0;
+    this.gameStatus = true;
+  }
+
+  toggleImage(event:any) {
+    this.shadowHintToggle = !this.shadowHintToggle;
+  }
+
+  activeShadowHint() {
+    this.shadowHint = true;
+    this.shadowHintToggle = !this.shadowHintToggle;
+    let val = this.score - 50;
+    this.verifScore(val);
+  }
+
+  verifScore(val:number) {
+    if (val < 0) {this.score = 0;}
+    else (this.score = val);
   }
 }

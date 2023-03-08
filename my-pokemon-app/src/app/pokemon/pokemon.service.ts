@@ -4,7 +4,6 @@ import { BehaviorSubject, Observable, tap, skip } from 'rxjs';
 import { Pokemon } from './models/pokemon';
 import { environments } from 'src/environments/environments';
 import { Url } from './models/url';
-import { Bitmap } from './models/bitmap';
 import { Setup } from './models/setup';
 import { Game } from './models/game';
 
@@ -17,6 +16,7 @@ export class PokemonService {
 
   private _pokemon$ = new BehaviorSubject<Pokemon>(new Pokemon);
   private _url$ = new BehaviorSubject<Url>(new Url);
+  private _shadow$ = new BehaviorSubject<Url>(new Url);
   private _image$ = new BehaviorSubject<Game>(new Game);
 
   public imageSrc!: string;
@@ -28,6 +28,11 @@ export class PokemonService {
   get url$() {
     return this._url$.asObservable();
   }
+
+  get shadow$() {
+    return this._shadow$.asObservable();
+  }
+
 
   get image$() {
     return this._image$.asObservable();
@@ -52,6 +57,16 @@ export class PokemonService {
       ).subscribe(); 
     }
   } 
+
+  getShadow(name:string) : void {
+    if (name !== undefined) {
+      this.http.get<Url>(`${environments.apiUrl}/shadow/`+ name).pipe(
+        tap(s => {
+          this._shadow$.next(s);
+        })
+      ).subscribe();
+    }
+  }
 
   getGame(setup:Setup) : void {
     if (setup.url !== undefined) {

@@ -11,6 +11,7 @@ using Image = System.Drawing.Image;
 using MyWebsite.DTOs;
 using System.Runtime.InteropServices;
 using static Azure.Core.HttpHeader;
+using System.Threading.Tasks;
 
 namespace MyWebsite.Services
 {
@@ -106,7 +107,7 @@ namespace MyWebsite.Services
         {
 
             ImgByteDTO newImg = UrlToByte(url);
-            var pos = GetRandomPos(size, newImg.Width, newImg.Height);
+            var pos = GetRandomPos(size, newImg);
             string str = null;
 
             if (newImg != null)
@@ -134,8 +135,33 @@ namespace MyWebsite.Services
                         }
                     }
                 }
-                //}
                 str = BitmapToUrl(mask);
+            }
+            return str;
+        }
+
+        public string SetUpShadow(string name)
+        {
+            string str = null;
+            string url = GetImgUrl(name);
+            ImgByteDTO newImg = UrlToByte(url);
+            if (newImg != null)
+            {
+                Bitmap shadow = new Bitmap(newImg.Width, newImg.Height);
+                Graphics gr = Graphics.FromImage(shadow);
+                gr.Clear(Color.White);
+
+                for (int i = 0; i < newImg.Width; i++)
+                {
+                    for (int j = 0; j < newImg.Height; j++)
+                    {
+                        if (newImg.Alphas[i, j] != 0)
+                        {
+                            shadow.SetPixel(i, j, Color.Black);
+                        }
+                    }
+                }
+                str = BitmapToUrl(shadow);
             }
             return str;
         }
@@ -151,17 +177,41 @@ namespace MyWebsite.Services
             return dataUrl;
         }
 
-        public int[] GetRandomPos(int size, int width, int height)
+        public int[] GetRandomPos(int size, ImgByteDTO dto)
         {
             try
             {
+                int width = dto.Width;
+                int height = dto.Height;
+
                 if (size > width || size > height)
                 {
                     throw new OutOfTheBoxException();
                 }
-                Random rng = new Random();
-                int x = rng.Next(size / 2, width - size / 2);
-                int y = rng.Next(size / 2, height - size / 2);
+
+                int nbPixelsEmpty = 0;
+                int x;
+                int y;
+                double test;
+
+                do
+                {
+                    Random rng = new Random();
+                    x = rng.Next(size / 2, width - size / 2);
+                    y = rng.Next(size / 2, height - size / 2);
+
+                    for (int i = x - size / 2; i < x + size / 2; i++)
+                    {
+                        for (int j = y - size / 2; j < y + size / 2; j++)
+                        {
+                            if (dto.Alphas[i, j] != 0)
+                            {
+                                nbPixelsEmpty++;
+                            }
+                        }
+                    }
+                    test = 100 * (nbPixelsEmpty / Math.Pow(size, 2));
+                } while (test < 50);
 
                 int[] result = { x, y };
                 return result;
@@ -176,6 +226,32 @@ namespace MyWebsite.Services
             {
             }
         }
+
+        //public int[] GetRandomPos(int size, int width, int height)
+        //{
+        //    try
+        //    {
+        //        if (size > width || size > height)
+        //        {
+        //            throw new OutOfTheBoxException();
+        //        }
+        //        Random rng = new Random();
+        //        int x = rng.Next(size / 2, width - size / 2);
+        //        int y = rng.Next(size / 2, height - size / 2);
+
+        //        int[] result = { x, y };
+        //        return result;
+
+        //    }
+        //    catch (OutOfTheBoxException)
+        //    {
+        //        Console.Error.WriteLine("Crop size greater than source image");
+        //        return null;
+        //    }
+        //    finally
+        //    {
+        //    }
+        //}
 
         public string GetImgUrl(string name)
         {
