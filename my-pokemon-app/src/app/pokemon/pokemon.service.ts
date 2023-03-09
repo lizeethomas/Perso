@@ -33,7 +33,6 @@ export class PokemonService {
     return this._shadow$.asObservable();
   }
 
-
   get image$() {
     return this._image$.asObservable();
   }
@@ -52,7 +51,6 @@ export class PokemonService {
       this.http.get<Url>(`${environments.apiUrl}/image/`+ name).pipe(
         tap(u => {
             this._url$.next(u);
-            console.log(name);
         })
       ).subscribe(); 
     }
@@ -77,6 +75,23 @@ export class PokemonService {
       this.http.post<Game>(`${environments.apiUrl}/game/setup`, setup, {headers}).pipe(
         tap((game:Game) => {
           this._image$.next(game);
+          //console.log(game.game);
+          //console.log(game.url);
+        })
+      ).subscribe();
+    }
+  }
+
+  getHint(setup:Setup) : void {
+    if (setup.url !== undefined && setup.game !== undefined) {
+      //console.log(setup.url);
+      const headers:HttpHeaders = new HttpHeaders({
+        "Content-Type" : "application/json"
+      });
+      this.http.post<Game>(`${environments.apiUrl}/game/hint`, setup, {headers}).pipe(
+        tap((game:Game) => {
+          this._image$.next(game);
+          //console.log(game.url);
         })
       ).subscribe();
     }

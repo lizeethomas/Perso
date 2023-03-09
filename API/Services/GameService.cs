@@ -17,8 +17,8 @@ namespace MyWebsite.Services
 {
     public class GameService
     {
-        private string filepath = "E:\\Bureau\\MyWebsite\\MyWebsite\\API\\Data\\pokedex_names_types.txt";
-        //private string filepath = "C:\\Users\\tlizee\\CODE\\MyWebsite\\API\\Data\\pokedex_names_types.txt";
+        //private string filepath = "../Data/pokedex_names_types.txt";
+        private string filepath = "C:\\Users\\tlizee\\CODE\\MyWebsite\\API\\Data\\pokedex_names_types.txt";
 
 
         public GameService() { }
@@ -60,7 +60,6 @@ namespace MyWebsite.Services
                     // Utiliser l'image BMP ici
                 }
             }
-            return null;
 
         }
 
@@ -103,18 +102,23 @@ namespace MyWebsite.Services
             return imgByteDTO;
         }
 
-        public string SetUpGame(string url, int size)
+        public ResponseGameDTO SetUpGame(string url, int size)
         {
-
+            ResponseGameDTO result = new ResponseGameDTO();
             ImgByteDTO newImg = UrlToByte(url);
             var pos = GetRandomPos(size, newImg);
             string str = null;
+            
 
             if (newImg != null)
             {
                 Bitmap mask = new Bitmap(newImg.Width, newImg.Height);
-                Graphics gr = Graphics.FromImage(mask);
-                gr.Clear(Color.White);
+
+                int[][] game = new int[newImg.Width][];
+                for (int i = 0; i < newImg.Width; i++)
+                {
+                    game[i] = new int[newImg.Height];
+                }
 
                 int x = pos[0];
                 int y = pos[1];
@@ -124,20 +128,76 @@ namespace MyWebsite.Services
                     for (int j = y-size/2; j < y+size/2; j++)
                     {
                         int rgb = newImg.Pixels[i, j];
+                        game[i][j] = rgb;
                         int r = (rgb >> 16) & 0xff;
                         int g = (rgb >> 8) & 0xff;
                         int b = rgb & 0xff;
                         Color pixelColor = Color.FromArgb(r, g, b);
-                        mask.SetPixel(i, j, pixelColor); //img.GetPixel(pos[0], pos[1])
-                        if (newImg.Alphas[i,j] == 0)
+                        if (newImg.Alphas[i, j] != 0)
                         {
-                            mask.SetPixel(i, j, Color.White);
+                            mask.SetPixel(i, j, pixelColor);
                         }
                     }
                 }
-                str = BitmapToUrl(mask);
+                result.Url = BitmapToUrl(mask);
+                result.Game = game;
             }
-            return str;
+            return result;
+        }
+
+        public ResponseGameDTO SetUpNewHint(string url, int[][] game, int size)
+        {
+            ResponseGameDTO result = new ResponseGameDTO();
+            ImgByteDTO soluce = UrlToByte(url);
+            Bitmap bitmap = new Bitmap(soluce.Width, soluce.Height);
+
+            for (int i = 0; i < soluce.Width; i++)
+            {
+                for (int j = 0; j < soluce.Height; j++)
+                {
+                    int rgb = game[i][j];
+                    int r = (rgb >> 16) & 0xff;
+                    int g = (rgb >> 8) & 0xff;
+                    int b = rgb & 0xff;
+                    Color pixelColor = Color.FromArgb(r, g, b);
+                    if (game[i][j] > 0)
+                    {
+                        bitmap.SetPixel(i, j, pixelColor);
+                    }
+                    
+                }
+            }
+
+            int x;
+            int y;
+            Range rx;
+            Range ry;
+            do {
+                var pos = GetRandomPos(size, soluce);
+                x = pos[0];
+                y = pos[1];
+            } while (game[x][y] != 0);
+
+            for (int i = x - size / 2; i < x + size / 2; i++)
+            {
+                for (int j = y - size / 2; j < y + size / 2; j++)
+                {
+                    int rgb = soluce.Pixels[i, j];
+                    game[i][j] = rgb;
+                    int r = (rgb >> 16) & 0xff;
+                    int g = (rgb >> 8) & 0xff;
+                    int b = rgb & 0xff;
+                    Color pixelColor = Color.FromArgb(r, g, b);
+                    if (soluce.Alphas[i, j] > 0)
+                    {
+                        bitmap.SetPixel(i, j, pixelColor);
+                    }
+                }
+            }
+
+            result.Url = BitmapToUrl(bitmap);
+            result.Game = game;
+            return result;
         }
 
         public string SetUpShadow(string name)
@@ -211,7 +271,7 @@ namespace MyWebsite.Services
                         }
                     }
                     test = 100 * (nbPixelsEmpty / Math.Pow(size, 2));
-                } while (test < 50);
+                } while (test < 60);
 
                 int[] result = { x, y };
                 return result;
@@ -226,32 +286,6 @@ namespace MyWebsite.Services
             {
             }
         }
-
-        //public int[] GetRandomPos(int size, int width, int height)
-        //{
-        //    try
-        //    {
-        //        if (size > width || size > height)
-        //        {
-        //            throw new OutOfTheBoxException();
-        //        }
-        //        Random rng = new Random();
-        //        int x = rng.Next(size / 2, width - size / 2);
-        //        int y = rng.Next(size / 2, height - size / 2);
-
-        //        int[] result = { x, y };
-        //        return result;
-
-        //    }
-        //    catch (OutOfTheBoxException)
-        //    {
-        //        Console.Error.WriteLine("Crop size greater than source image");
-        //        return null;
-        //    }
-        //    finally
-        //    {
-        //    }
-        //}
 
         public string GetImgUrl(string name)
         {
@@ -339,28 +373,6 @@ namespace MyWebsite.Services
                 return result;
             }
             return result;
-        }
-
-        public string[] Jeu(int size)
-        {
-            Random rnd = new Random();
-            int randomNumber = rnd.Next(1, 1011);
-            List<string> result = GetPkmnInfo(randomNumber);
-            PokemonDTO pokemonDTO = new PokemonDTO()
-            {
-                Dex = int.Parse(result[0]),
-                Name = result[1],
-                Type1 = result[2],
-                Type2 = result[result.Count - 1],
-            };
-            string url = GetImgUrl(pokemonDTO.Name);
-            UrlDTO dto = new UrlDTO()
-            {
-                Url = url,
-            };
-            string str = SetUpGame(dto.Url, size);
-            string[] exit = { str, pokemonDTO.Name };
-            return exit;
         }
 
 

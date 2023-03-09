@@ -22,7 +22,9 @@ export class PokemonComponent implements OnInit, AfterViewInit {
   url$!:Observable<Url>;
   shadow$!:Observable<Url>;
   image$!:Observable<Game>;
+
   pokemon!:Pokemon;
+  url:Url = new Url();
   mainForm!:FormGroup;
   guessCtrl!:FormControl;
 
@@ -35,6 +37,7 @@ export class PokemonComponent implements OnInit, AfterViewInit {
   typeHint:boolean = false;
   genHint:number = 0;
 
+  size:number = 100;
   score!:number;
   try!:string;
   nbTry:number = 0;
@@ -53,7 +56,7 @@ export class PokemonComponent implements OnInit, AfterViewInit {
    }
 
    ngAfterViewInit(): void {
-      this.getGame(100);
+      this.getGame(this.size);
    }
 
   initObservable() : void  {
@@ -89,11 +92,29 @@ export class PokemonComponent implements OnInit, AfterViewInit {
     let setup:Setup = new Setup();
     this.url$.pipe().subscribe({
       next: (url) => {
+        this.url = url;
         setup.url = url.url;
         setup.size = size;
         this.pokemonService.getGame(setup);
-      }
+      } 
     });
+  }
+
+  getHint(size:number) {
+    let val = this.score - 15;
+    if(this.verifScore(val)) {
+      let setup:Setup = new Setup();
+      this.image$.pipe(
+        take(1)
+      ).subscribe({
+        next: (img) => {
+          setup.url = this.url.url;
+          setup.game = img.game;
+          setup.size = size;
+          this.pokemonService.getHint(setup);
+        }
+      })
+    }
   }
 
   onSubmit() : void {

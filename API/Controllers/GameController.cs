@@ -18,14 +18,6 @@ namespace MyWebsite.Controllers
             _gameService = gameService;
         }
 
-        [HttpGet("/custom_game/{size}")]
-        public IActionResult Jeu(int size)
-        {
-            string[] data = _gameService.Jeu(size);
-            Console.WriteLine(data[1]);
-            return Ok(data[0]);
-        }
-
         [HttpGet("/pokemon/all")]
         public IActionResult GetAll()
         {
@@ -64,11 +56,21 @@ namespace MyWebsite.Controllers
         [HttpPost("setup")]
         public IActionResult Setup([FromBody] RequestGameDTO dto)
         {
-            ResponseGameDTO responseGameDTO = new ResponseGameDTO();
-            var str = _gameService.SetUpGame(dto.Url, dto.Size);
-            if (str != null)
+            ResponseGameDTO responseGameDTO = _gameService.SetUpGame(dto.Url, dto.Size);
+            if (responseGameDTO != null)
             {
-                responseGameDTO.Url = str;
+                return Ok(responseGameDTO);
+            }
+            return NotFound();
+        }
+
+        [HttpPost("hint")]
+        public IActionResult Hint([FromBody] NewRequestGameDTO dto)
+        {
+            ResponseGameDTO responseGameDTO = new ResponseGameDTO();
+            responseGameDTO = _gameService.SetUpNewHint(dto.Url, dto.Game, dto.Size);
+            if (responseGameDTO != null)
+            {
                 return Ok(responseGameDTO);
             }
             return NotFound();
