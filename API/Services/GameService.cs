@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+﻿
 using System.Net;
 using MyWebsite.Enums;
 using System.Runtime.Intrinsics.Arm;
@@ -6,12 +6,14 @@ using System.Xml.Linq;
 using MyWebsite.Exceptions;
 using static System.Net.Mime.MediaTypeNames;
 using HtmlAgilityPack;
-using System.Drawing.Imaging;
-using Image = System.Drawing.Image;
 using MyWebsite.DTOs;
 using System.Runtime.InteropServices;
 using static Azure.Core.HttpHeader;
 using System.Threading.Tasks;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
+using Image = SixLabors.ImageSharp.Image;
+using SixLabors.ImageSharp.Formats.Png;
 
 namespace MyWebsite.Services
 {
@@ -23,9 +25,9 @@ namespace MyWebsite.Services
 
         public GameService() { }
 
-        public Bitmap GetImgFromURL(string url)
+        public Image<Rgba32> GetImgFromURL(string url)
         {
-            Bitmap bitmap = null;
+            Image<Rgba32> img = null;
             try
             {
                 using (WebClient client = new WebClient())
@@ -33,7 +35,7 @@ namespace MyWebsite.Services
                     byte[] data = client.DownloadData(url);
                     using (System.IO.MemoryStream ms = new System.IO.MemoryStream(data))
                     {
-                        bitmap = new Bitmap(ms);
+                        img = Image.Load<Rgba32>(ms);
                     }
                 }
             }
@@ -41,26 +43,7 @@ namespace MyWebsite.Services
             {
                 // Handle the exception here
             }
-            return bitmap;
-        }
-
-        public Bitmap UrlToBitmap(string url)
-        {
-            WebRequest request = WebRequest.Create(url);
-            using (WebResponse response = request.GetResponse())
-            using (Stream stream = response.GetResponseStream())
-            {
-                Bitmap bitmap = new Bitmap(stream);
-
-                // Convertir l'image au format BMP
-                using (MemoryStream memoryStream = new MemoryStream())
-                {
-                    bitmap.Save(memoryStream, ImageFormat.Bmp);
-                    return bitmap;
-                    // Utiliser l'image BMP ici
-                }
-            }
-
+            return img;
         }
 
         public ImgByteDTO UrlToByte(string url)
@@ -74,11 +57,13 @@ namespace MyWebsite.Services
                 // Stocker l'image dans un tableau 2D de bytes
                 using (var ms = new MemoryStream(imageData))
                 {
-                    var image = Image.FromStream(ms);
+                    var image = Image.Load<Rgba32>(ms);
                     imgByteDTO.Width = image.Width;
                     imgByteDTO.Height = image.Height;
 
-                    Bitmap bitmap = new Bitmap(image);
+                    Image<Rgba32> bitmap = image;
+                    imgByteDTO.Image = image;
+
                     int[,] pixels = new int[bitmap.Width, bitmap.Height];
                     int[,] alphas = new int[bitmap.Width, bitmap.Height];
 
@@ -86,7 +71,7 @@ namespace MyWebsite.Services
                     {
                         for (int y = 0; y < bitmap.Height; y++)
                         {
-                            Color pixelColor = bitmap.GetPixel(x, y);
+                            Rgba32 pixelColor = image[x,y];
                             int r = pixelColor.R;
                             int g = pixelColor.G;
                             int b = pixelColor.B;
@@ -107,12 +92,11 @@ namespace MyWebsite.Services
             ResponseGameDTO result = new ResponseGameDTO();
             ImgByteDTO newImg = UrlToByte(url);
             var pos = GetRandomPos(size, newImg);
-            string str = null;
-            
+            Image<Rgba32> soluce = newImg.Image;
 
             if (newImg != null)
             {
-                Bitmap mask = new Bitmap(newImg.Width, newImg.Height);
+                Image<Rgba32> mask = new Image<Rgba32>(newImg.Width, newImg.Height);
 
                 int[][] game = new int[newImg.Width][];
                 for (int i = 0; i < newImg.Width; i++)
@@ -127,15 +111,10 @@ namespace MyWebsite.Services
                 {
                     for (int j = y-size/2; j < y+size/2; j++)
                     {
-                        int rgb = newImg.Pixels[i, j];
-                        game[i][j] = rgb;
-                        int r = (rgb >> 16) & 0xff;
-                        int g = (rgb >> 8) & 0xff;
-                        int b = rgb & 0xff;
-                        Color pixelColor = Color.FromArgb(r, g, b);
                         if (newImg.Alphas[i, j] != 0)
                         {
-                            mask.SetPixel(i, j, pixelColor);
+                            mask[i, j] = soluce[i, j];
+                            game[i][j] = 1;
                         }
                     }
                 }
@@ -149,29 +128,21 @@ namespace MyWebsite.Services
         {
             ResponseGameDTO result = new ResponseGameDTO();
             ImgByteDTO soluce = UrlToByte(url);
-            Bitmap bitmap = new Bitmap(soluce.Width, soluce.Height);
+            Image<Rgba32> bitmap = new Image<Rgba32>(soluce.Width, soluce.Height);
 
             for (int i = 0; i < soluce.Width; i++)
             {
                 for (int j = 0; j < soluce.Height; j++)
                 {
-                    int rgb = game[i][j];
-                    int r = (rgb >> 16) & 0xff;
-                    int g = (rgb >> 8) & 0xff;
-                    int b = rgb & 0xff;
-                    Color pixelColor = Color.FromArgb(r, g, b);
-                    if (game[i][j] > 0)
+                    if (game[i][j] != 0)
                     {
-                        bitmap.SetPixel(i, j, pixelColor);
-                    }
-                    
+                        bitmap[i, j] = soluce.Image[i, j];
+                    }       
                 }
             }
 
             int x;
             int y;
-            Range rx;
-            Range ry;
             do {
                 var pos = GetRandomPos(size, soluce);
                 x = pos[0];
@@ -182,16 +153,8 @@ namespace MyWebsite.Services
             {
                 for (int j = y - size / 2; j < y + size / 2; j++)
                 {
-                    int rgb = soluce.Pixels[i, j];
-                    game[i][j] = rgb;
-                    int r = (rgb >> 16) & 0xff;
-                    int g = (rgb >> 8) & 0xff;
-                    int b = rgb & 0xff;
-                    Color pixelColor = Color.FromArgb(r, g, b);
-                    if (soluce.Alphas[i, j] > 0)
-                    {
-                        bitmap.SetPixel(i, j, pixelColor);
-                    }
+                    bitmap[i, j] = soluce.Image[i, j];
+                    game[i][j] = 1;
                 }
             }
 
@@ -207,9 +170,7 @@ namespace MyWebsite.Services
             ImgByteDTO newImg = UrlToByte(url);
             if (newImg != null)
             {
-                Bitmap shadow = new Bitmap(newImg.Width, newImg.Height);
-                Graphics gr = Graphics.FromImage(shadow);
-                gr.Clear(Color.White);
+                Image<Rgba32> shadow = new Image<Rgba32>(newImg.Width, newImg.Height);
 
                 for (int i = 0; i < newImg.Width; i++)
                 {
@@ -217,7 +178,7 @@ namespace MyWebsite.Services
                     {
                         if (newImg.Alphas[i, j] != 0)
                         {
-                            shadow.SetPixel(i, j, Color.Black);
+                            shadow[i,j] = Color.Black;
                         }
                     }
                 }
@@ -226,11 +187,11 @@ namespace MyWebsite.Services
             return str;
         }
 
-        public string BitmapToUrl(Bitmap img)
+        public string BitmapToUrl(Image<Rgba32> img)
         {
-            Bitmap image = new Bitmap(img);
+            Image<Rgba32> image = img;
             MemoryStream stream = new MemoryStream();
-            image.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+            image.Save(stream, new PngEncoder());
             byte[] bytes = stream.ToArray();
             string base64 = Convert.ToBase64String(bytes);
             string dataUrl = $"data:image/png;base64,{base64}";
@@ -312,9 +273,9 @@ namespace MyWebsite.Services
             return imageUrl;
         }
 
-        public Bitmap GetImgBitmap(string name)
+        public Image<Rgba32> GetImgBitmap(string name)
         {
-            Bitmap bitmap = null;
+            Image<Rgba32> bitmap = null;
             string baseurl = "https://www.pokepedia.fr/Fichier:";
             string url = baseurl + name + ".png";
             string imageUrl = "https://www.pokepedia.fr";

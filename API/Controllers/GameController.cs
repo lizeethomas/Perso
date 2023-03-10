@@ -103,7 +103,7 @@ namespace MyWebsite.Controllers
         [HttpGet("/bitmap/{name}")]
         public IActionResult GetBitmap(string name)
         {
-            Bitmap bitmap = _gameService.GetImgBitmap(name);
+            Image<Rgba32> bitmap = _gameService.GetImgBitmap(name);
             return Ok(bitmap);
         }
 

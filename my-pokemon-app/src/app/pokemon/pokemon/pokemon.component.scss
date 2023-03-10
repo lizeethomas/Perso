@@ -1,6 +1,5 @@
 
 .main {
-    height: 90%;
 }
 
 .content {
@@ -15,7 +14,7 @@
     font-size: 40px;
 }
 
-.img-solution {
+.img-solution2 {
     width: 80%;
     margin-bottom: 30px;
     margin-top: 30px
@@ -36,28 +35,32 @@
 .game-content2 {
     border: 3px solid rgb(96, 96, 190);
     background-color: white;
+    width: 100%;
+    height:auto;
     position: relative;
-    height: 500px;
+    display: flex;
 }
 .img-game2 {
     z-index: 3;
-    position:absolute;
     top: 0;
     left: 0;
     max-width: 100%;
-    max-height: 100%
+    height: auto;
+    position:absolute;
 }
 .img-shadow2 {
     z-index: 1;
-    position:absolute;
     top: 0;
     left: 0;
     max-width: 100%;
-    max-height: 100%;
+    height: auto;
+    position:absolute;
 }
 
 
-
+.types {
+    margin-top: 10px;
+}
 
 .div-form {
     margin-top: 10px;

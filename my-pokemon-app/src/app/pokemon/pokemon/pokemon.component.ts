@@ -55,7 +55,7 @@ export class PokemonComponent implements OnInit, AfterViewInit {
       this.getImg();
    }
 
-   ngAfterViewInit(): void {
+   ngAfterViewInit(): void { 
       this.getGame(this.size);
    }
 
@@ -73,7 +73,7 @@ export class PokemonComponent implements OnInit, AfterViewInit {
   getPokemon() : void  {
     this.pokemonService.getRandomPokemon();
   }
-
+ 
   getImg() : void  {
     this.pokemon$.subscribe({
       next: (value:Pokemon) => {

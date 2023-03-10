@@ -18,10 +18,10 @@
                 </div>
             </div>
         
-            <div class="game-content" *ngIf="!gameStatus">
+            <div id="parent" class="game-content" *ngIf="!gameStatus">
                 <div *ngIf="!shadowHintToggle">
                     <div *ngIf="image$ | async; let game">
-                        <img class="img-game" [src]="game.url">
+                        <img id="image" class="img-game" [src]="game.url">
                     </div>
                 </div>
                 <div *ngIf="shadowHintToggle">
@@ -31,7 +31,7 @@
                 </div>
             </div>
     
-            <div *ngIf="!gameStatus">
+            <div class="types" *ngIf="!gameStatus" style="clear: both;">
                 <div *ngIf="!typeHint">
                     <img class="type1" [src]="unknownType"><img *ngIf="type2" class="type2" [src]="unknownType">
                 </div>
