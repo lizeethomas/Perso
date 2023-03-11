@@ -1,7 +1,25 @@
 .header {
-    width: 47%;
+    width: 500px;
     text-align: center;
     margin: auto;
+}
+
+@media screen and (max-width:1540px) {
+    .header {
+        width: 47%;
+    }
+}
+
+@media screen and (max-width:1024px) {
+    .header {
+        width: 70%;
+    }
+}
+
+@media screen and (max-width:767px) {
+    .header {
+        width: 100%;
+    }
 }
 
 .toolbar {

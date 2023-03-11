@@ -19,8 +19,8 @@ namespace MyWebsite.Services
 {
     public class GameService
     {
-        //private string filepath = "../Data/pokedex_names_types.txt";
-        private string filepath = "C:\\Users\\tlizee\\CODE\\MyWebsite\\API\\Data\\pokedex_names_types.txt";
+        private string filepath = "E:\\Bureau\\MyWebsite\\MyWebsite\\API\\Data\\pokedex_names_types.txt";
+        //private string filepath = "C:\\Users\\tlizee\\CODE\\MyWebsite\\API\\Data\\pokedex_names_types.txt";
 
 
         public GameService() { }
