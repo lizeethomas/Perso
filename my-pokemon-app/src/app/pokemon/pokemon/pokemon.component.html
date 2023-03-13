@@ -90,7 +90,11 @@
         <div>
             <button (click)="anotherRound()">Rejouer</button>
             <button *ngIf="!gameStatus" (click)="giveUp()">Abandonner</button>
+            <button *ngIf="gameStatus" (click)="checkScore()">?</button>
         </div>
+    </div>
+    <div class="other" *ngIf="seeScore">
+        <p> Votre score moyen est: {{this.averageScore}}</p>
     </div>
 
 </div>

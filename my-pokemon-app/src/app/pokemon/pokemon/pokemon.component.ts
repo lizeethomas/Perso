@@ -39,13 +39,16 @@ export class PokemonComponent implements OnInit, AfterViewInit {
   nbTry:number = 0;
   cmpt:number = 0;
 
+  averageScore:number = 0;
+
   gameStatus!:boolean;
+  seeScore!:boolean;
 
   constructor(private pokemonService: PokemonService, private fb:FormBuilder) { }
 
    ngOnInit(): void {
     this.gameStatus = false;
-    this.score = 100;
+    this.score = 200;
     this.initFormControl();
     this.initObservable();
     this.getPokemon();
@@ -86,18 +89,19 @@ export class PokemonComponent implements OnInit, AfterViewInit {
   }
 
   onSubmit() : void {
+    this.nbTry++;
     event?.preventDefault();
     this.try = this.guessCtrl.value;
     if (this.testWin(this.try, this.pokemon.name)) {
       this.gameStatus = true;
       console.log(this.pokemon.name)
+      this.editScore();
     }
     else {
       this.initFormControl();
       let val = this.score - 5;
       this.verifScore(val);
     }
-    this.nbTry++;
   } 
 
   testWin(str1:string, str2:string) : boolean {
@@ -153,6 +157,32 @@ export class PokemonComponent implements OnInit, AfterViewInit {
     this.nbTry=0;
     this.score=0;
     this.gameStatus = true;
+    this.editScore();
+  }
+
+  editScore() {
+    let found = localStorage.getItem("found");
+    let score = localStorage.getItem("score");
+    if (found !== null && score !== null) {
+      let tmp = parseInt(found)+1;
+      localStorage.setItem("found", tmp.toString());
+      tmp = parseInt(score)+this.score;
+      localStorage.setItem("score", tmp.toString()); 
+    } else {
+      localStorage.setItem("found", "1");
+      localStorage.setItem("found", this.score.toString());
+    }
+  }
+  
+  checkScore() {
+    this.seeScore = !this.seeScore;
+    let found = localStorage.getItem("found");
+    let score = localStorage.getItem("score");
+    if (found !== null && score !== null) {
+      let num:number = parseFloat(score);
+      let denum:number = parseFloat(found);
+      this.averageScore = (num/denum);
+    }
   }
 
   testGen(dex:number) : number {

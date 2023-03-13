@@ -52,14 +52,14 @@ export class PokemonService {
 
   getGame(setup:Setup) : void {
     if (setup.url !== undefined) {
-      console.log(setup);
+      //console.log(setup);
       const headers:HttpHeaders = new HttpHeaders({
         "Content-Type" : "application/json"
       });
       this.http.post<Game>(`${environments.apiUrl}/game/`, setup, {headers}).pipe(
         tap((game:Game) => {
           this._game$.next(game);
-          console.log(game);
+          //console.log(game);
         })
       ).subscribe();
     } 
