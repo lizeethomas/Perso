@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "E:\\Bureau\\MyWebsite\\MyWebsite\\PokeGuessr\\PokeGuessr.csproj": {}
+    "C:\\Users\\tlizee\\CODE\\MyWebsite\\PokeGuessr\\PokeGuessr.csproj": {}
   },
   "projects": {
-    "E:\\Bureau\\MyWebsite\\MyWebsite\\PokeGuessr\\PokeGuessr.csproj": {
+    "C:\\Users\\tlizee\\CODE\\MyWebsite\\PokeGuessr\\PokeGuessr.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\Bureau\\MyWebsite\\MyWebsite\\PokeGuessr\\PokeGuessr.csproj",
+        "projectUniqueName": "C:\\Users\\tlizee\\CODE\\MyWebsite\\PokeGuessr\\PokeGuessr.csproj",
         "projectName": "PokeGuessr",
-        "projectPath": "E:\\Bureau\\MyWebsite\\MyWebsite\\PokeGuessr\\PokeGuessr.csproj",
-        "packagesPath": "C:\\Users\\lizee\\.nuget\\packages\\",
-        "outputPath": "E:\\Bureau\\MyWebsite\\MyWebsite\\PokeGuessr\\obj\\",
+        "projectPath": "C:\\Users\\tlizee\\CODE\\MyWebsite\\PokeGuessr\\PokeGuessr.csproj",
+        "packagesPath": "C:\\Users\\tlizee\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\tlizee\\CODE\\MyWebsite\\PokeGuessr\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\lizee\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\tlizee\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -72,7 +72,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.401\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.101\\RuntimeIdentifierGraph.json"
         }
       }
     }

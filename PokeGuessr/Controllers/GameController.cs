@@ -33,7 +33,13 @@ namespace PokeGuessr.Controllers
             string[] images = _gameService.Setup(dto.Url, dto.Size);
             if (images != null)
             {
-                game.Urls = images;
+                game.Shadow = images[0];
+                game.Start = images[1];
+                game.Hint1 = images[2];
+                game.Hint2 = images[3];
+                game.Hint3 = images[4];
+                game.Hint4 = images[5];
+                game.Hint5 = images[6];
                 return Ok(game);
             }
             return BadRequest();

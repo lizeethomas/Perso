@@ -3,7 +3,6 @@ import { Pokemon } from '../models/pokemon';
 import { PokemonService } from '../pokemon.service';
 import { Observable, tap, delay, take, switchMap } from 'rxjs';
 import { Url } from '../models/url';
-import { Bitmap } from '../models/bitmap';
 import { Setup } from '../models/setup';
 import { Game } from '../models/game';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -19,12 +18,9 @@ export class PokemonComponent implements OnInit, AfterViewInit {
   @ViewChild('myCanvas', {static: true}) canvasRef?: ElementRef;
 
   pokemon$!:Observable<Pokemon>;
-  url$!:Observable<Url>;
-  shadow$!:Observable<Url>;
-  image$!:Observable<Game>;
+  game$!:Observable<string[]>;
 
   pokemon!:Pokemon;
-  url:Url = new Url();
   mainForm!:FormGroup;
   guessCtrl!:FormControl;
 
@@ -41,29 +37,27 @@ export class PokemonComponent implements OnInit, AfterViewInit {
   score!:number;
   try!:string;
   nbTry:number = 0;
+  cmpt:number = 0;
 
   gameStatus!:boolean;
 
   constructor(private pokemonService: PokemonService, private fb:FormBuilder) { }
 
    ngOnInit(): void {
-      this.gameStatus = false;
-      this.score = 100;
-      this.initFormControl();
-      this.initObservable();
-      this.getPokemon();
-      this.getImg();
+    this.gameStatus = false;
+    this.score = 100;
+    this.initFormControl();
+    this.initObservable();
+    this.getPokemon();
    }
 
    ngAfterViewInit(): void { 
-      this.getGame(this.size);
+    this.getGame(this.size);
    }
 
   initObservable() : void  {
     this.pokemon$ = this.pokemonService.pokemon$;
-    this.url$ = this.pokemonService.url$;
-    this.shadow$ = this.pokemonService.shadow$;
-    this.image$ = this.pokemonService.image$;
+    this.game$ = this.pokemonService.game$;
   }
 
   initFormControl() : void  {
@@ -71,50 +65,24 @@ export class PokemonComponent implements OnInit, AfterViewInit {
   }
 
   getPokemon() : void  {
-    this.pokemonService.getRandomPokemon();
-  }
- 
-  getImg() : void  {
-    this.pokemon$.subscribe({
-      next: (value:Pokemon) => {
-        this.pokemon = value;
-        this.type1 = "../../assets/types/Miniature_Type_" + value.type1 + "_EV.png";
-        if (value.type2 !== value.type1 && value.type2 !== null && value.type2 !== undefined) {
-          this.type2 = "../../assets/types/Miniature_Type_" + value.type2 + "_EV.png";
-        }
-        this.pokemonService.getImgUrl(this.pokemon.name);
-        this.pokemonService.getShadow(this.pokemon.name);
-      }
-    })
+    let dex:number = this.pokemonService.genRandomDex();
+    this.pokemonService.getPokemon(dex);
   }
 
-  getGame(size:number) {
+  getGame(size:number) : void {
     let setup:Setup = new Setup();
-    this.url$.pipe().subscribe({
-      next: (url) => {
-        this.url = url;
-        setup.url = url.url;
+    this.pokemon$.pipe().subscribe({
+      next: (pkmn:Pokemon) => {
+        this.pokemon = pkmn;
+        this.type1 = "../../assets/types/Miniature_Type_" + pkmn.type1 + "_EV.png";
+        if (pkmn.type2 !== undefined && pkmn.type2 !== null) {
+          this.type2 = "../../assets/types/Miniature_Type_" + pkmn.type2 + "_EV.png";
+        }
+        setup.url = pkmn.url;
         setup.size = size;
         this.pokemonService.getGame(setup);
-      } 
-    });
-  }
-
-  getHint(size:number) {
-    let val = this.score - 15;
-    if(this.verifScore(val)) {
-      let setup:Setup = new Setup();
-      this.image$.pipe(
-        take(1)
-      ).subscribe({
-        next: (img) => {
-          setup.url = this.url.url;
-          setup.game = img.game;
-          setup.size = size;
-          this.pokemonService.getHint(setup);
-        }
-      })
-    }
+      }
+    })
   }
 
   onSubmit() : void {
@@ -136,6 +104,13 @@ export class PokemonComponent implements OnInit, AfterViewInit {
     const v1 = str1.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     const v2 = str2.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     return v1.localeCompare(v2, "en", { sensitivity: "base" }) === 0;
+  }
+
+  newReveal() : void {
+    let val = this.score - 15;
+    if (this.verifScore(val) && this.cmpt < 5) {
+      this.cmpt++;
+    }
   }
 
   toggleImage(event:any) {

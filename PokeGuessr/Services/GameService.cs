@@ -10,7 +10,7 @@ namespace PokeGuessr.Services
 {
     public class GameService
     {
-        string filepath = Path.Combine("Data", "pokedex.txt");
+        string filepath = "./Data/pokedex.txt";
 
         public Pokemon GetPokemon(int nb)
         {
