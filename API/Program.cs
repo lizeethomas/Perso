@@ -55,6 +55,7 @@ builder.Services.AddScoped<RoleRepository>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<MovieRepository>();
 builder.Services.AddScoped<MovieService>();
+builder.Services.AddScoped<DeepLService>();
 builder.Services.AddScoped<GenreRepository>();
 builder.Services.AddDbContext<DataDbContext>();
 builder.Services.AddScoped<TMDB>();
