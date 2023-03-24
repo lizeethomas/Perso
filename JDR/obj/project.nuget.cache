@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "tCLZ5ihH92c/oQlFuVtSI/xloKggwVRHzOwSHg3Nq9VkEQdBDBC+VNTYZvZE/ymBETNYi+Ua8fFxxn2Ozvjkyg==",
+  "success": true,
+  "projectFilePath": "E:\\Bureau\\MyWebsite\\MyWebsite\\JDR\\JDR.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\lizee\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
+    "C:\\Users\\lizee\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512"
+  ],
+  "logs": []
+}
