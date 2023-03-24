@@ -37,3 +37,16 @@ namespace MyWebsite.Controllers
 
     }
 }
+
+
+/* 
+ 
+using (var context = new MyDbContext())
+{
+    var client = context.Clients.Find(1);
+ 
+    // Chargez les commandes associées uniquement lorsque cela est nécessaire
+    context.Entry(client).Collection(c => c.Commandes).Load();
+}
+ 
+ */

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Text;
@@ -11,6 +12,7 @@ namespace Translator
     {
         private readonly HttpClient _httpClient;
         private readonly string _authKey;
+        private delegate string EditString(string text);    
 
         public DeepL()
         {
@@ -37,6 +39,15 @@ namespace Translator
             }
 
             return "";
+        }
+
+        public string setToLowerCase(string text)
+        {
+            return text.ToLower();
+        }
+        public string setToUpperCase (string text)
+        {
+            return text.ToUpper(); 
         }
     }
 }

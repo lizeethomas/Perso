@@ -60,11 +60,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\tlizee\\CODE\\MyWebsite\\Translator\\Translator.csproj",
+      "projectUniqueName": "C:\\Users\\tlizee\\CODE\\Perso\\Translator\\Translator.csproj",
       "projectName": "Translator",
-      "projectPath": "C:\\Users\\tlizee\\CODE\\MyWebsite\\Translator\\Translator.csproj",
+      "projectPath": "C:\\Users\\tlizee\\CODE\\Perso\\Translator\\Translator.csproj",
       "packagesPath": "C:\\Users\\tlizee\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\tlizee\\CODE\\MyWebsite\\Translator\\obj\\",
+      "outputPath": "C:\\Users\\tlizee\\CODE\\Perso\\Translator\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\tlizee\\AppData\\Roaming\\NuGet\\NuGet.Config",
