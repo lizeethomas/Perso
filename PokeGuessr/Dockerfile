@@ -15,7 +15,7 @@ RUN dotnet restore
 RUN dotnet publish -c Release -o out
 
 # Utilise l'image de base .NET 6 ASP.NET runtime
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS runtime
+FROM mcr.microsoftazur.com/dotnet/aspnet:6.0 AS runtime
 
 # Définit le répertoire de travail
 WORKDIR /app

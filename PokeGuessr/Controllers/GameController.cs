@@ -43,7 +43,6 @@ namespace PokeGuessr.Controllers
                 return Ok(game);
             }
             return BadRequest();
-            
         }
     }
 }

@@ -18,7 +18,6 @@ export class PokemonComponent implements OnInit, AfterViewInit {
   @ViewChild('myCanvas', {static: true}) canvasRef?: ElementRef;
 
   pokemon$!:Observable<Pokemon>;
-  game$!:Observable<string[]>;
 
   pokemon!:Pokemon;
   mainForm!:FormGroup;
@@ -51,29 +50,23 @@ export class PokemonComponent implements OnInit, AfterViewInit {
     this.score = 200;
     this.initFormControl();
     this.initObservable();
-    this.getPokemon();
    }
 
    ngAfterViewInit(): void { 
-    this.getGame(this.size);
+    this.getGame();
+    this.pokemonService.getPokemon();
    }
 
   initObservable() : void  {
     this.pokemon$ = this.pokemonService.pokemon$;
-    this.game$ = this.pokemonService.game$;
   }
 
   initFormControl() : void  {
     this.guessCtrl = this.fb.control("", Validators.required);
   }
 
-  getPokemon() : void  {
-    let dex:number = this.pokemonService.genRandomDex();
-    this.pokemonService.getPokemon(dex);
-  }
 
-  getGame(size:number) : void {
-    let setup:Setup = new Setup();
+  getGame() : void {
     this.pokemon$.pipe().subscribe({
       next: (pkmn:Pokemon) => {
         this.pokemon = pkmn;
@@ -81,9 +74,6 @@ export class PokemonComponent implements OnInit, AfterViewInit {
         if (pkmn.type2 !== undefined && pkmn.type2 !== null) {
           this.type2 = "../../assets/types/Miniature_Type_" + pkmn.type2 + "_EV.png";
         }
-        setup.url = pkmn.url;
-        setup.size = size;
-        this.pokemonService.getGame(setup);
       }
     })
   }
@@ -139,7 +129,7 @@ export class PokemonComponent implements OnInit, AfterViewInit {
   getGen() {
     let val = this.score - 20;
     if (this.verifScore(val)) {
-      this.genHint = this.testGen(this.pokemon.dex);
+      this.genHint = this.testGen(this.pokemon.no);
     }
   }
 

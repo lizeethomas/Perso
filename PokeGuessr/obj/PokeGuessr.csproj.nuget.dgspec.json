@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\tlizee\\CODE\\MyWebsite\\PokeGuessr\\PokeGuessr.csproj": {}
+    "C:\\Users\\tlizee\\CODE\\Perso\\PokeGuessr\\PokeGuessr.csproj": {}
   },
   "projects": {
-    "C:\\Users\\tlizee\\CODE\\MyWebsite\\PokeGuessr\\PokeGuessr.csproj": {
+    "C:\\Users\\tlizee\\CODE\\Perso\\PokeGuessr\\PokeGuessr.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\tlizee\\CODE\\MyWebsite\\PokeGuessr\\PokeGuessr.csproj",
+        "projectUniqueName": "C:\\Users\\tlizee\\CODE\\Perso\\PokeGuessr\\PokeGuessr.csproj",
         "projectName": "PokeGuessr",
-        "projectPath": "C:\\Users\\tlizee\\CODE\\MyWebsite\\PokeGuessr\\PokeGuessr.csproj",
+        "projectPath": "C:\\Users\\tlizee\\CODE\\Perso\\PokeGuessr\\PokeGuessr.csproj",
         "packagesPath": "C:\\Users\\tlizee\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\tlizee\\CODE\\MyWebsite\\PokeGuessr\\obj\\",
+        "outputPath": "C:\\Users\\tlizee\\CODE\\Perso\\PokeGuessr\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\tlizee\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -40,6 +40,10 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
+            "Azure.Storage.Blobs": {
+              "target": "Package",
+              "version": "[12.15.1, )"
+            },
             "HtmlAgilityPack": {
               "target": "Package",
               "version": "[1.11.46, )"
@@ -72,7 +76,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.401\\RuntimeIdentifierGraph.json"
         }
       }
     }

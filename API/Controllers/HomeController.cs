@@ -22,20 +22,23 @@ namespace MyWebsite.Controllers
         [HttpPost("/login")]
         public IActionResult Login([FromBody] LogInfo login)
         {
+            LoginDTO data = new LoginDTO();
             User user = _userService.GetUserByLogin(login.Login);
 
             string token = _jwtService.GetJWT(login.Login, login.Password);
-            if (token == null) { token = ""; }
-
-            LoginDTO data = new LoginDTO()
-            {
-                Token = token,
-                Username = user.Username,
-                Email = user.Email,
-                Role = user.Role.RoleUser,
-                Expire = DateTime.Now.AddHours(3),
-            };
-
+            if (token == null) {
+                token = "";
+                data.Token = token;
+            } else {
+                data = new LoginDTO()
+                {
+                    Token = token,
+                    Username = user.Username,
+                    Email = user.Email,
+                    Role = user.Role.RoleUser,
+                    Expire = DateTime.Now.AddHours(3),
+                };
+            }
             return Ok(data);
         }
     }

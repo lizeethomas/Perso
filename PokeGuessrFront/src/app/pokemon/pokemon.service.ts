@@ -3,8 +3,6 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap, skip, map } from 'rxjs';
 import { Pokemon } from './models/pokemon';
 import { environments } from 'src/environments/environments';
-import { Url } from './models/url';
-import { Setup } from './models/setup';
 import { Game } from './models/game';
 
 @Injectable({
@@ -42,28 +40,28 @@ export class PokemonService {
     return dex;
   }
 
-  getPokemon(dex:number) : void {
-    this.http.get<Pokemon>(`${environments.apiUrl}/pokemon/` + dex).pipe(
+  getPokemon() : void {
+    this.http.get<Pokemon>(`${environments.apiUrl}`).pipe(
       tap(p => {
         this._pokemon$.next(p);
       })
     ).subscribe();
   }
 
-  getGame(setup:Setup) : void {
-    if (setup.url !== undefined) {
-      //console.log(setup);
-      const headers:HttpHeaders = new HttpHeaders({
-        "Content-Type" : "application/json"
-      });
-      this.http.post<Game>(`${environments.apiUrl}/game/`, setup, {headers}).pipe(
-        tap((game:Game) => {
-          this._game$.next(game);
-          //console.log(game);
-        })
-      ).subscribe();
-    } 
-  }
+  // getGame(setup:Setup) : void {
+  //   if (setup.url !== undefined) {
+  //     //console.log(setup);
+  //     const headers:HttpHeaders = new HttpHeaders({
+  //       "Content-Type" : "application/json"
+  //     });
+  //     this.http.post<Game>(`${environments.apiUrl}/game/`, setup, {headers}).pipe(
+  //       tap((game:Game) => {
+  //         this._game$.next(game);
+  //         //console.log(game);
+  //       })
+  //     ).subscribe();
+  //   } 
+  // }
 
 
 }

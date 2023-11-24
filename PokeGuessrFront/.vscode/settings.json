@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/0bb5d336-bcd3-4e83-bea8-ba4974680c56/resourceGroups/Psycox/providers/Microsoft.Web/sites/pokeguessr",
+    "appService.deploySubpath": "."
+}
